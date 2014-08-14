@@ -133,7 +133,7 @@
             
             <div id="header">
                 <a href="/Maintenance"><img src="images/voo-logo.png"></a>
-                <h1>Translation Manager</h1>
+                <h1>{{ "Generic.Title" |t}}</h1>
             </div>
             
 
@@ -150,7 +150,7 @@
                 </div>
 
                 <div style="float: right">
-                    <span>{{ "Generic.Title" |t}} </span>
+                    <span>{{ "Generic.ChangeLanguage" |t}} </span>
                     <select ng-model="language.current" ng-change="language.change()" ng-options="lang.key as lang.name for lang in language.options"></select>
                 </div>
                 
@@ -178,7 +178,7 @@
                             <input type="text" ng-model="lang" pattern="[a-z]{2}" ng-disabled="!trans.enabled" style="width:14px;" required />
                         </li>
                         <li class="col">
-                            <input type="text" style="width:80%" ng-model="val" placeholder="Your translation goes here..." required />
+                            <input type="text" class="trans-{{language.current}}" ng-model="val" placeholder="Your translation goes here..." required />
                         </li>
                         <li class="col">
                             <button type="button" style="float: right" ng-click="sendUpdatedTranslation(trans, lang, val);">{{ "Generic.Save" |t}}</button>

@@ -1,5 +1,9 @@
 {
 	"Title" : {
+		"en": "Translation Manager",
+		"fr": "Gestionnaire de traduction"
+	},	
+	"ChangeLanguage" : {
 		"en": "Change language",
 		"fr": "Changer de langue"
 	},
