@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html ng-app="translateApp">
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.17/angular.js" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.17/angular-route.js" />
+  </head>
+  <body>
+
+    <script>
+  		var app = angular.module('translateApp', ['ngRoute']);
+
+		app.controller('langController', function($scope) {
+		    $scope.languages = ["en", "fr"];
+		});
+
+    </script>
+
+    <section ng-controller="langController">
+    	
+	    <p>{{ languages.length }}</p>
+
+	    <h1><%=__("Home.Index.Title") %></h1>
+
+	    <p><%=__("Home.Index.HelloWorld") %></p>
+
+	    <div>
+	    	<%=__("Home.Index.ChangeLanguage") %>
+
+
+		    <select ng-model="language.item" name="languageChanger">
+		    	<option ng-repeat="lang in languages">{{ lang }}</option>
+		    </select>
+
+	    </div>
+
+
+    </section>
+
+  </body>
+</html>
