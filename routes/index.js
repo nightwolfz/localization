@@ -7,14 +7,20 @@ var express = require('express'),
 HOME
 -----------------------------------*/
 router.get('/', function (req, res) {
-    console.log(helper);
+    
+    // Inject translations to view
     res.locals.allLanguages = helper.getTranslationsBySet();
+    
+    // Render the view
     res.render('index', { title: 'Express', translationSet: '' });
 });
 
 router.get('/edit/:translationSet', function (req, res) {
-    console.log(helper);
+    
+    // Inject translations to view
     res.locals.allLanguages = helper.getTranslationsBySet(req.params.translationSet);
+    
+    // Render the view
     res.render('index', { title: 'Express', translationSet: req.params.translationSet });
 });
 

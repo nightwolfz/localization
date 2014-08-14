@@ -1,3 +1,4 @@
 /obj/*
 /node_modules/*
 node_modules
+/.ntvs_analysis.dat

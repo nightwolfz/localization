@@ -1,4 +1,12 @@
 {
+	"Title" : {
+		"en": "Change language",
+		"fr": "Changer de langue"
+	},
+	"ChangeTranslationSet" : {
+		"en": "Translation set",
+		"fr": "Set de traduction"
+	},
 	"Create": {
 		"en": "Create",
 		"fr": "Créer"
@@ -6,5 +14,9 @@
 	"Delete": {
 		"en": "Delete",
 		"fr": "Supprimer"
+	},
+	"Save": {
+		"en": "Save",
+		"fr": "Sauvegarder"
 	}
 }

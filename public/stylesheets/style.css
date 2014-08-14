@@ -4,6 +4,8 @@ body {
   padding: 0;
 }
 
+img { border: none; }
+
 a {
   color: #00B7FF;
 }
@@ -19,6 +21,40 @@ section {
 .header {
     padding: 4px 8px;
     background: #f3f6fa;
+    border-top: 1px solid #e0e0e0;
+}
+
+.header div span {
+    font-weight: bold;
+    color: #da1d79;
+}
+
+.header div select {
+    font-weight: bold;
+    padding: 1px;
+}
+
+
+div#header {
+    background-image: url("../Images/header-bg.jpg");
+    background-position: 0 -150px;
+    height: 70px;
+    padding: 20px 0 10px 20px;
+}
+
+div#header img {
+    float: left;
+}
+
+div#header h1 {
+    border-left: 1px solid #c0c0c0;
+    color: #999;
+    float: left;
+    font-size: 21px;
+    height: 38px;
+    margin: 4px 0 0 20px;
+    padding: 13px 0 0 20px;
+    word-spacing: 6px;
 }
 
 .transTable {
@@ -26,17 +62,14 @@ section {
     border-collapse: collapse;
 }
 
-
-
 .transTable > div {
-    background: #ccc;
-    padding: 8px 4px;
+    background: #D5D9DF;
+    padding: 8px 10px;
     margin-top: 1em;
 }
 
 .transTable > div:nth-child(even) {
-    background: #ddd;
-    padding: 8px 4px;
+    background: #E6E6E6;
 }
 
 .transTable textarea {
@@ -64,32 +97,51 @@ section {
     display: inline; 
 }
 
+.transTable .col input,
+.transTable .col button {
+    padding: 2px 4px;
+}
+
+.transTable .col button:hover {
+    -webkit-box-shadow: 0 1px 3px #777;
+    background: #FA1D79;
+}
+.transTable .col button {
+    background: #DA1D79;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 0.95em;
+    padding: 0.3em 1em;
+    margin-left: 0;
+    margin-right: 0;
+    text-align: center;
+    vertical-align: middle;
+}
+
 .info {
-    font-weight: bold;
-    color: #1e60ff;
+    padding: 8px 4px;
+    margin: 1em;
+    color: #D7FAAB;
 }
 
 .error {
-    color: #FFF;
     padding: 8px 4px;
-    background: #FF3737;
+    margin: 1em;
+    background: #FFBCAB;
 }
 
-.img-error {
-    background-image: url(../Images/glyphicons-halflings-white.png);
-    background-position: 158px 0px;
+
+.img-ok { background-position: 182px 0;}
+.img-error { background-position: 158px 0;}
+.img-error, .img-ok {
+    background-image: url(../Images/glyphicons-halflings.png);
     width: 16px;
     height: 16px;
     display: inline-block;
+    vertical-align: middle; 
 }
 
-.img-ok {
-    background-image: url(../Images/glyphicons-halflings-white.png);
-    background-position: 182px 0px;
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-}
 
 .clear {
     clear: both;
