@@ -4,35 +4,15 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
-var routes = require('./routes/index');
-var users = require('./routes/users');
-
-var app = module.exports = express();
-
-//--------------------------------
-// Internalization
-//--------------------------------
-var i18n = require("i18n");
-
-i18n.configure({
-    locales: ['en'],
-    directory: __dirname + '/locales',
-    updateFiles: false,
-    objectNotation: true
-});
-
-app.use(i18n.init);
+var app = express();
 
 //--------------------------------
 // View engine setup
 //--------------------------------
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+//app.engine('html', require('ejs').renderFile);
 
-//--------------------------------
-// Other setup
-//--------------------------------
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -43,10 +23,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 //--------------------------------
 // Routes
 //--------------------------------
+var routes = require('./routes/index');
+var users = require('./routes/users');
+var lang = require('./routes/lang');
+
 app.use('/', routes);
 app.use('/users', users);
+app.use('/lang', lang);
 
-/// catch 404 and forward to error handler
+//--------------------------------
+// Error Handlers
+//--------------------------------
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
@@ -54,12 +41,7 @@ app.use(function(req, res, next) {
 });
 
 //--------------------------------
-// Error Handlers
-//--------------------------------
-
-
-//--------------------------------
-// Dev error handler
+// Error Handlers (DEV)
 //--------------------------------
 if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
@@ -71,16 +53,16 @@ if (app.get('env') === 'development') {
     });
 }
 
-//if (!module.parent) {
-  app.listen(8080);
-  console.log('Express started on port 8080');
-//}
+//--------------------------------
+// Error Handlers (PROD)
+//--------------------------------
+app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+        message: err.message,
+        error: {}
+    });
+});
 
+module.exports = app;
 
-/******************************
-i18n-node:
-* most popular
-* updated often
-* can be used with node-i18n-mongo
-
-*******************************/

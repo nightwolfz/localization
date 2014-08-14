@@ -1,5 +1,3 @@
+/obj/*
 /node_modules/*
-/obj
-*.log
-*.suo
-*.csproj.user
+node_modules

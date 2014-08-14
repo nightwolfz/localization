@@ -1,9 +1,21 @@
-var express = require('express');
-var router = express.Router();
+var express = require('express'),
+    path = require('path'),
+    helper = require('./../helpers/helpers'),
+    router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res) {
-  res.render('index', { title: 'Express' });
+/*-----------------------------------
+HOME
+-----------------------------------*/
+router.get('/', function (req, res) {
+    console.log(helper);
+    res.locals.allLanguages = helper.getTranslationsBySet();
+    res.render('index', { title: 'Express', translationSet: '' });
+});
+
+router.get('/edit/:translationSet', function (req, res) {
+    console.log(helper);
+    res.locals.allLanguages = helper.getTranslationsBySet(req.params.translationSet);
+    res.render('index', { title: 'Express', translationSet: req.params.translationSet });
 });
 
 module.exports = router;

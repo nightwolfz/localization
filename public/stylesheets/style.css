@@ -1,8 +1,96 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  margin: 1em; 
+  padding: 0;
 }
 
 a {
   color: #00B7FF;
+}
+
+section {
+    background: #fafafa;
+    padding: 16px;
+    margin: 0 auto;
+    width: 780px;
+    border: 1px solid #f0f0f0;
+}
+
+.header {
+    padding: 4px 8px;
+    background: #f3f6fa;
+}
+
+.transTable {
+    margin: 0;
+    border-collapse: collapse;
+}
+
+
+
+.transTable > div {
+    background: #ccc;
+    padding: 8px 4px;
+    margin-top: 1em;
+}
+
+.transTable > div:nth-child(even) {
+    background: #ddd;
+    padding: 8px 4px;
+}
+
+.transTable textarea {
+    width: 99%;
+    height: 5em;
+}
+
+.transTable th, .transTable tr, .transTable td {
+    border: 1px solid #eee;
+    padding: 2px 4px;
+}
+
+.transTable li {
+    list-style: none;
+    list-style-position:inside;
+    vertical-align: middle;
+}
+
+.transTable .row {
+    margin: 0;
+    -webkit-padding-start: 0px;
+}
+
+.transTable .col {
+    display: inline; 
+}
+
+.info {
+    font-weight: bold;
+    color: #1e60ff;
+}
+
+.error {
+    color: #FFF;
+    padding: 8px 4px;
+    background: #FF3737;
+}
+
+.img-error {
+    background-image: url(../Images/glyphicons-halflings-white.png);
+    background-position: 158px 0px;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+}
+
+.img-ok {
+    background-image: url(../Images/glyphicons-halflings-white.png);
+    background-position: 182px 0px;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+}
+
+.clear {
+    clear: both;
 }

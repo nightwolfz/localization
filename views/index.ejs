@@ -1,42 +1,189 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html ng-app="translateApp">
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.17/angular.js" />
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.17/angular-route.js" />
-  </head>
-  <body>
+    <head>
+        <meta charset="utf-8">
+        <title><%= title %></title>
+        <link rel='stylesheet' href="/stylesheets/style.css" />
 
-    <script>
-  		var app = angular.module('translateApp', ['ngRoute']);
+        <script src="/javascripts/angular.js"></script>
+        <script src="/javascripts/angular-route.js"></script>
+        <script src="/javascripts/angular-cookies.js"></script>
+        <script src="/javascripts/angular-translate.js"></script>
+        <script src="/javascripts/angular-translate-loader-url.js"></script>
+        <script src="/javascripts/main.js"></script>
+    </head>
+    <body>
+        <script>
+            var languageKeys = new Array();
+            var availableLanguages = [{ key: 'en', name: 'English' }, { key: 'fr', name: 'Français' }];
+            availableLanguages.map(function(v, k){ 
+                languageKeys.push(v.key);
+            });
 
-		app.controller('langController', function($scope) {
-		    $scope.languages = ["en", "fr"];
-		});
+            var app = angular.module('translateApp', ['ngRoute', 'ngCookies', 'pascalprecht.translate']);
 
-    </script>
+            // Ryan's little helper (aka Overwrite translation filter, cos screw the rules!)
+            app.filter('t', [
+                '$parse',
+                '$translate',
+                function ($parse, $translate) {
+                    return function (translationId, interpolateParams, interpolation) {
+                        if (!window.angular.isObject(interpolateParams)) interpolateParams = $parse(interpolateParams)(this);
+                        return $translate.instant(translationId + '.' + $translate.use(), interpolateParams, interpolation);
+                    };
+                }
+            ]);
 
-    <section ng-controller="langController">
-    	
-	    <p>{{ languages.length }}</p>
+            app.config(function ($translateProvider) {
+                console.log('TranslationSet: <%=translationSet%>');
+                $translateProvider.useUrlLoader('lang');
+                //$translateProvider.useUrlLoader('lang/<%=translationSet%>');
+                //$translateProvider.translations('en', window.allLanguages);
+                //$translateProvider.translations('fr', window.allLanguages);
+                //$translateProvider.translations('en', allLanguages);
+                //$translateProvider.useInterpolation('ryanInterpolation');
+            });
 
-	    <h1><%=__("Home.Index.Title") %></h1>
+            app.controller('langController', function ($scope, $http, $cookies, $location, $translate, $filter) {
+                
+                $translate.use($cookies.locale || 'en');
 
-	    <p><%=__("Home.Index.HelloWorld") %></p>
+                //------------------------------------------
+                // Settings
+                //------------------------------------------
+                $scope.language = {
+                    keys: languageKeys,
+                    options: availableLanguages,
+                    current: $cookies.locale,
+                    change: function () {
+                        $translate.use($scope.language.current);
+                        $cookies.locale = $scope.language.current;
+                    }
+                };
 
-	    <div>
-	    	<%=__("Home.Index.ChangeLanguage") %>
+                $scope.translations = <%-allLanguages%>;
+                $scope.selectedTranslationSet = 'Generic';
 
+                //------------------------------------------
+                // Flatten multidimensional array to single
+                //------------------------------------------
+                $scope.translationsTableRefresh = function() {
+                    var single = [];
 
-		    <select ng-model="language.item" name="languageChanger">
-		    	<option ng-repeat="lang in languages">{{ lang }}</option>
-		    </select>
+                    angular.forEach($scope.translations, function(trans, cat) {
+                        
+                        if ($scope.selectedTranslationSet != cat){
+                            console.log("No go for: " + $scope.selectedTranslationSet + ' != ' + cat);
+                            return;
+                        }
+                        for (key in trans) {
+                            single.push({
+                                translationSet: cat,
+                                key: key,
+                                values: trans[key]
+                            });
+                        }
+                    }, single);
 
-	    </div>
+                    /*debug*/ console.info(single);
 
+                    $translate.refresh();
 
-    </section>
+                    return single;
+                };
 
-  </body>
+                $scope.translationsTable = $scope.translationsTableRefresh();
+
+                //------------------------------------------
+                // Fetch the translation set from service
+                //------------------------------------------
+                $scope.$watch('selectedTranslationSet', function(value) {
+                    /*debug*/ console.info('Changing set: ' + value);
+                    $translate.refresh();
+                    $scope.translationsTable = $scope.translationsTableRefresh();
+                }, true);
+
+                $scope.enableEditing = function(trans) {
+                    trans.disabled = !trans.disabled;
+                };
+
+                $scope.sendUpdatedTranslation = function(trans, lang, val) {
+                    $http({
+                        method  : 'PUT',
+                        url     : '/translations',
+                        data    : {
+                            translationSet: trans.translationSet,
+                            key: trans.key,
+                            languageCode: lang,
+                            value: val
+                        },
+                        dataType: "json",
+                        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+                    })
+                    .success(function(data) {
+                        $scope.infoMessage = data.message;
+                        $translate.refresh();
+                    })
+                    .error(function(data, status) {
+                        $scope.errorMessage = 'FAILED! ' + status;
+                        $translate.refresh();
+                    });
+                };
+            });
+        </script>
+
+        <section ng-controller="langController">
+            
+            <div class="header">
+                <b>{{ language.current }} : {{ "Create" |t}}</b>
+                <select ng-model="language.current" ng-change="language.change()" ng-options="lang.key as lang.name for lang in language.options"></select>
+            </div>
+
+            <div>
+                <textarea ng-model="jsonString" rows="20" style="width: 100%; font-size: 10px; font-family: Helvetica;"></textarea>
+            </div>
+    
+
+            <div class="error" ng-show="errorMessage"><span class="img-error">&nbsp;</span> {{errorMessage}}</div>
+            <div class="info" ng-show="infoMessage"><span class="img-ok">&nbsp;</span> {{infoMessage}}</div>
+
+            <div class="transTable">
+                <select ng-model="selectedTranslationSet">
+                    <option ng-repeat="(k, trans) in translations">{{ k }}</option>
+                </select>
+            </div>
+            
+            <div class="transTable">
+                <div ng-repeat="(k, trans) in translationsTable">
+                    <ul class="row">
+                        <li class="col clear">
+                            <button ng-click="addTranslation" style="float: left"> + </button>
+                        </li>
+                        <li class="col">
+                            <button ng-click="enableEditing(trans)" style="float: left"> = </button>
+                        </li>
+                        <li class="col">
+                            <input type="text" style="width:60px" ng-model="trans.translationSet" pattern="[a-zA-Z0-9\.]{3,16}" ng-disabled="trans.disabled" required />
+                        </li>
+                        <li class="col">
+                            <input type="text" style="width:100px" ng-model="trans.key" pattern="[a-zA-Z0-9\.]{3,16}" ng-disabled="trans.disabled" required />
+                        </li>
+                    </ul>
+                    <ul class="row" ng-repeat="(lang, val) in trans.values">
+                        <li class="col">
+                            <input type="text" ng-model="lang" pattern="[a-z]{2}" ng-disabled="trans.disabled" style="width:24px;" required />
+                        </li>
+                        <li class="col">
+                            <input type="text" style="width:680px" ng-model="val" placeholder="Your translation goes here..." required />
+                        </li>
+                        <li class="col">
+                            <button type="button" ng-click="sendUpdatedTranslation(trans, lang, val);">Save</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </section>
+
+    </body>
 </html>
