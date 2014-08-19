@@ -7,11 +7,11 @@ var express = require('express'),
 LANG
 -----------------------------------*/
 router.get('/', function (req, res) {
-    res.end(helper.getTranslationsBySet());
+    res.end(helper.getTranslationsLocal());
 });
 
 router.get('/:lang', function (req, res) {
-    res.end(helper.getTranslationsBySet(req.params.lang));
+    res.end(helper.getTranslationsLocal(req.params.lang));
 });
 
 

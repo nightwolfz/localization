@@ -29,7 +29,7 @@
                 function ($parse, $translate) {
                     return function (translationId, interpolateParams, interpolation) {
                         if (!window.angular.isObject(interpolateParams)) interpolateParams = $parse(interpolateParams)(this);
-                        return $translate.instant(translationId + '.' + $translate.use(), interpolateParams, interpolation);
+                        return $translate.instant(translationId + '.values.' + $translate.use(), interpolateParams, interpolation);
                     };
                 }
             ]);
@@ -50,7 +50,6 @@
                 //------------------------------------------
                 $cookies.locale = $cookies.locale || "en";
                 $translate.use($cookies.locale);
-                console.warn("Locale used: " + $translate.use() + ' : ' + $cookies.locale);
 
                 $scope.language = {
                     keys: languageKeys,
@@ -73,13 +72,15 @@
 
                     angular.forEach($scope.translations, function(trans, cat) {
 
+                        
+
                         if ($scope.selectedTranslationSet != cat) return;
                         
                         for (key in trans) {
                             single.push({
-                                translationSet: cat,
-                                key: key,
-                                values: trans[key]
+                                'key': key,
+                                'values': trans[key].values,
+                                'translationSets': trans[key].translationSets
                             });
                         }
                     }, single);
@@ -90,6 +91,8 @@
                 };
 
                 $scope.translationsTable = $scope.translationsTableRefresh();
+
+                console.log($scope.translationsTable);
 
                 //------------------------------------------
                 // Fetch the translation set from service
@@ -104,27 +107,37 @@
                     trans.enabled = !trans.enabled;
                 };
 
-                $scope.sendUpdatedTranslation = function(trans, lang, val) {
-                    $http({
-                            method  : 'PUT',
-                            url     : '/translations',
-                            data    : {
-                                translationSet: trans.translationSet,
-                                key: trans.key,
-                                languageCode: lang,
-                                value: val
-                            },
-                            dataType: "json",
-                            headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
-                        })
-                        .success(function(data) {
-                            $scope.infoMessage = data.message;
-                            $translate.refresh();
-                        })
-                        .error(function(data, status) {
-                            $scope.errorMessage = 'FAILED! ' + status;
-                            $translate.refresh();
-                        });
+                $scope.sendUpdatedTranslation = function(trans) {
+
+                    var json = {};
+                    json[trans.key] = {
+                        'values': trans.values,
+                        'translationSets': trans.translationSets
+                    };
+
+
+                    console.log(JSON.stringify(json));
+
+                    /*$http({
+                        method  : 'PUT',
+                        url     : '/translations',
+                        data    : {
+                            translationSet: trans.translationSet,
+                            key: trans.key,
+                            languageCode: lang,
+                            value: val
+                        },
+                        dataType: "json",
+                        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+                    })
+                    .success(function(data) {
+                        $scope.infoMessage = data.message;
+                        $translate.refresh();
+                    })
+                    .error(function(data, status) {
+                        $scope.errorMessage = 'FAILED! ' + status;
+                        $translate.refresh();
+                    });*/
                 };
             });
         </script>
@@ -166,11 +179,8 @@
                         <li class="col">
                             <button ng-click="enableEditing(trans)"> = </button>
                         </li>
-                        <li class="col">
-                            <input type="text" style="width:60px" ng-model="trans.translationSet" pattern="[a-zA-Z0-9\.]{3,16}" ng-disabled="!trans.enabled" required />
-                        </li>
-                        <li class="col">
-                            <input type="text" style="width:100px" ng-model="trans.key" pattern="[a-zA-Z0-9\.]{3,16}" ng-disabled="!trans.enabled" required />
+                        <li class="col" ng-repeat="set in trans.translationSets">
+                            <input type="text" style="width:100px" ng-model="set" pattern="[a-zA-Z0-9\.]{3,16}" ng-disabled="!trans.enabled" required />
                         </li>
                     </ul>
                     <ul class="row" ng-repeat="(lang, val) in trans.values">
@@ -180,10 +190,13 @@
                         <li class="col">
                             <input type="text" class="trans-{{language.current}}" ng-model="val" placeholder="Your translation goes here..." required />
                         </li>
+                    </ul>
+                    <ul class="row">
                         <li class="col">
-                            <button type="button" style="float: right" ng-click="sendUpdatedTranslation(trans, lang, val);">{{ "Generic.Save" |t}}</button>
+                            <button type="button" style="float: right" ng-click="sendUpdatedTranslation(trans);">{{ "Generic.Save" |t}}</button>
                         </li>
                     </ul>
+                    <div class="clear"></div>
                 </div>
             </div>
 

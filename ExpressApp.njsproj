@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4a77448b-b1ee-4d5a-ba62-c6560b2c525b}</ProjectGuid>
     <ProjectHome />
-    <ProjectView>ProjectFiles</ProjectView>
+    <ProjectView>ShowAllFiles</ProjectView>
     <StartupFile>app.js</StartupFile>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -19,9 +19,12 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
-    <Content Include="locales\translations.json" />
+    <Content Include="bin\www" />
+    <Content Include="locales\Generic.json" />
+    <Content Include="locales\Home.json" />
     <Content Include="package.json" />
     <Compile Include="app.js" />
+    <Compile Include="helpers\helpers.js" />
     <Compile Include="public\javascripts\angular-cookies.js" />
     <Compile Include="public\javascripts\angular-route.js" />
     <Compile Include="public\javascripts\angular-translate-loader-url.js" />
@@ -39,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin" />
+    <Folder Include="helpers\" />
     <Folder Include="locales\" />
     <Folder Include="public" />
     <Folder Include="public\images" />

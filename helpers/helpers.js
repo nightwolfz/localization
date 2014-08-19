@@ -2,12 +2,13 @@
     path = require('path'),
     fs = require('fs'),
     router = express.Router(),
+    http = require("http"),
     helpers = {};
 
 /*-----------------------------------
- Fetch languages from a service
+ Fetch languages from local files
 -----------------------------------*/
-helpers.getTranslationsBySet = function (langSet) {
+helpers.getTranslationsLocal = function (langSet) {
     
     langSet = langSet || false;
     var result = new Object(), fileName, fileNameJson;
@@ -27,5 +28,32 @@ helpers.getTranslationsBySet = function (langSet) {
     console.log(result);
     return JSON.stringify(result);
 };
+
+/*-----------------------------------
+ Fetch languages from a service
+-----------------------------------*/
+helpers.getTranslations = function() {
+    var buffer = '';
+    var options = {
+        host: 'localhost',
+        port: 3000,
+        path: '/lang'
+    };
+    var callback = function(response) {
+
+        response.on('data', function(chunk) {
+            buffer += chunk;
+        });
+
+        response.on('end', function () {
+            console.log(req.data);
+            console.log(buffer); //JSON.parse(buffer);
+        });
+    };
+    
+    var req = http.request(options, callback).end();
+    console.log(req);
+};
+
 
 module.exports = helpers;

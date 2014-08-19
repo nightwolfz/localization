@@ -1,6 +1,9 @@
 {
 	"FirstName": {
-		"en": "First Name",
-		"fr": "Prénom"
+		"translationSets": ["Home"],
+		"values": {
+			"en": "First Name",
+			"fr": "Prénom"
+		}
 	}
 }

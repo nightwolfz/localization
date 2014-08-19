@@ -1,26 +1,37 @@
 {
 	"Title" : {
-		"en": "Translation Manager",
-		"fr": "Gestionnaire de traduction"
+		"translationSets": ["Generic","Translation"],
+		"values": {
+			"en": "Translation Manager",
+			"fr": "Gestionnaire de traduction"
+		}
 	},	
 	"ChangeLanguage" : {
-		"en": "Change language",
-		"fr": "Changer de langue"
+		"translationSets": ["Generic"],
+		"values": {
+			"en": "Change language",
+			"fr": "Changer de langue"
+		}
 	},
 	"ChangeTranslationSet" : {
-		"en": "Translation set",
-		"fr": "Set de traduction"
+		"translationSets": ["Generic"],
+		"values": {
+			"en": "Translation set",
+			"fr": "Set de traduction"
+		}
 	},
 	"Create": {
-		"en": "Create",
-		"fr": "Créer"
-	},
-	"Delete": {
-		"en": "Delete",
-		"fr": "Supprimer"
+		"translationSets": ["Generic"],
+		"values": {
+			"en": "Create",
+			"fr": "Créer"
+		}
 	},
 	"Save": {
-		"en": "Save",
-		"fr": "Sauvegarder"
+		"translationSets": ["Generic"],
+		"values": {
+			"en": "Save",
+			"fr": "Sauvegarder"
+		}
 	}
 }
