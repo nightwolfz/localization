@@ -10,8 +10,10 @@ var app = express();
 // View engine setup
 //--------------------------------
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-//app.engine('html', require('ejs').renderFile);
+//app.set('view engine', 'ejs');
+
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
 
 app.use(favicon());
 app.use(logger('dev'));
@@ -26,11 +28,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Routes
 //--------------------------------
 var routes = require('./routes/index');
-var users = require('./routes/users');
 var lang = require('./routes/lang');
 
 app.use('/', routes);
-app.use('/users', users);
 app.use('/lang', lang);
 
 //--------------------------------

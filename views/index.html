@@ -2,7 +2,7 @@
 <html ng-app="translateApp">
     <head>
         <meta charset="utf-8">
-        <title><%= title %></title>
+        <title>Translation Manager</title>
         <link rel='stylesheet' href="/stylesheets/style.css" />
 
         <script src="/javascripts/angular.js"></script>
@@ -14,12 +14,6 @@
     </head>
     <body>
         <script>
-            var languageKeys = [];
-            var availableLanguages = [{ key: 'en', name: 'English' }, { key: 'fr', name: 'Français' }];
-            availableLanguages.map(function(v){ 
-                languageKeys.push(v.key);
-            });
-
             var app = angular.module('translateApp', ['ngRoute', 'ngCookies', 'pascalprecht.translate']);
 
             // Ryan's little helper (aka Overwrite translation filter, cos screw the rules!)
@@ -34,26 +28,61 @@
                 }
             ]);
 
-            app.config(function ($translateProvider) {
-                $translateProvider.useUrlLoader('lang');
-                //$translateProvider.useUrlLoader('lang/<%=translationSet%>');
-                //$translateProvider.translations('en', allLanguages);
-                //$translateProvider.translations('fr', allLanguages);
-                //$translateProvider.preferredLanguage('en');
-                //$translateProvider.useInterpolation('ryanInterpolation');
+            // Let's write a new loader, because the original is suitable
+            app.factory('transLoader', function ($http, $q, $timeout, $rootScope) {
+                return function(options) {
+
+                    // Go fetch data from bertrands service
+                    var deferred = $q.defer();
+                    $http({
+                        method: 'GET',
+                        url: 'lang'
+                    }).success(deferred.resolve).error(function () {
+                        deferred.reject(options.key);
+                    });
+
+                    // Use returned json for translations
+                    deferred.promise.then(function(data) {
+                        //setTimeout(function()
+                        //{
+                            $rootScope.translations = data;
+                            $rootScope.selectedTranslationSet = 'Generic';
+                            $rootScope.$digest();
+                            console.debug(data);
+                        //}, 1000); //simulate network latency @TODO: Remove when deploying
+                    });
+
+                    return deferred.promise;
+                };
             });
 
-            app.controller('langController', function ($scope, $http, $cookies, $location, $translate) {
+            app.config(function ($translateProvider) {
+                $translateProvider.useLoader('transLoader');
+            });
 
-                //------------------------------------------
-                // Settings
-                //------------------------------------------
+            app.controller('langController', function ($scope, $http, $cookies, $location, $translate, $log) {
+
+                // Keep an eye on translations array (ex: user fetches new translationSet)
+                /*$scope.$watch('translations', function(val) {
+                    $log.debug("Storing new translations...");
+                    $scope.translationsTable = $scope.translationsTableRefresh();
+                }, true);*/
+
+                /*------------------------------------------
+                                Settings
+                -----------------------------------------*/
                 $cookies.locale = $cookies.locale || "en";
                 $translate.use($cookies.locale);
 
+                $scope.languageKeys = [];
+                $scope.availableLanguages = [{ key: 'en', name: 'English' }, { key: 'fr', name: 'Français' }];
+                $scope.availableLanguages.map(function(v) {
+                    $scope.languageKeys.push(v.key);
+                });
+
                 $scope.language = {
-                    keys: languageKeys,
-                    options: availableLanguages,
+                    keys: $scope.languageKeys,
+                    options: $scope.availableLanguages,
                     current: $cookies.locale,
                     change: function () {
                         $translate.use($scope.language.current);
@@ -61,18 +90,13 @@
                     }
                 };
 
-                $scope.translations = <%-allLanguages%>;
-                $scope.selectedTranslationSet = 'Generic';
+                $log.warn($scope.translations);
 
-                //------------------------------------------
-                // Flatten multidimensional array to single
-                //------------------------------------------
+                /* Flatten multidimensional array to single */
                 $scope.translationsTableRefresh = function() {
                     var single = [];
-
+                    $log.warn($scope.translations);
                     angular.forEach($scope.translations, function(trans, cat) {
-
-                        
 
                         if ($scope.selectedTranslationSet != cat) return;
                         
@@ -84,27 +108,37 @@
                             });
                         }
                     }, single);
-
-                    $translate.refresh();
-
+                    //$translate.refresh();
                     return single;
                 };
 
-                $scope.translationsTable = $scope.translationsTableRefresh();
-
-                console.log($scope.translationsTable);
-
-                //------------------------------------------
-                // Fetch the translation set from service
-                //------------------------------------------
+                /* Fetch the translation set from service */
                 $scope.$watch('selectedTranslationSet', function(value) {
-                    /*debug*/ console.info('Changing set: ' + value);
-                    $translate.refresh();
-                    $scope.translationsTable = $scope.translationsTableRefresh();
+                    if (typeof value != 'undefined') {
+                        $log.debug('Changing set: ' + value);
+                        $scope.translationsTable = $scope.translationsTableRefresh();
+                    }
                 }, true);
 
                 $scope.enableEditing = function(trans) {
                     trans.enabled = !trans.enabled;
+                };
+                $scope.addTranslationSet = function(trans) {
+                    var index = trans.translationSets.indexOf('');
+                    if (index == -1) {
+                        trans.translationSets.push( '' );
+                    }
+                };
+                $scope.removeTranslationSet = function(trans) {
+                    //trans.translationSets = trans.translationSets.join('').split('');
+                    //console.log(trans.translationSets.join('').split(''));
+
+                    //var updatedSets = trans.translationSets.filter(Number);
+                    trans.translationSets = trans.translationSets.filter(function(x) {
+                        console.log(x + ' -> ' + typeof x);
+                        return x != '' && typeof x == 'string';
+                    });
+                    console.warn(trans.translationSets);
                 };
 
                 $scope.sendUpdatedTranslation = function(trans) {
@@ -115,8 +149,9 @@
                         'translationSets': trans.translationSets
                     };
 
+                    $log.debug(JSON.stringify(json, null, 4));
 
-                    console.log(JSON.stringify(json));
+                    //$scope.translationsTable = $scope.translationsTableRefresh();
 
                     /*$http({
                         method  : 'PUT',
@@ -132,6 +167,7 @@
                     })
                     .success(function(data) {
                         $scope.infoMessage = data.message;
+                        $scope.translationsTable = $scope.translationsTableRefresh();
                         $translate.refresh();
                     })
                     .error(function(data, status) {
@@ -174,18 +210,18 @@
                 <div ng-repeat="(k, trans) in translationsTable">
                     <ul class="row">
                         <li class="col clear">
-                            <button ng-click="addTranslation"> + </button>
+                            <button ng-click="addTranslationSet(trans)"> + </button>
                         </li>
                         <li class="col">
-                            <button ng-click="enableEditing(trans)"> = </button>
+                            <button ng-click="removeTranslationSet(trans)"> - </button>
                         </li>
                         <li class="col" ng-repeat="set in trans.translationSets">
-                            <input type="text" style="width:100px" ng-model="set" pattern="[a-zA-Z0-9\.]{3,16}" ng-disabled="!trans.enabled" required />
+                            <input type="text" style="width:100px" ng-model="set" pattern="[a-zA-Z0-9\.\_]{3,16}" required />
                         </li>
                     </ul>
                     <ul class="row" ng-repeat="(lang, val) in trans.values">
                         <li class="col">
-                            <input type="text" ng-model="lang" pattern="[a-z]{2}" ng-disabled="!trans.enabled" style="width:14px;" required />
+                            <input type="text" ng-model="lang" pattern="[a-z]{2}" ng-disabled="1" style="width:14px;" required />
                         </li>
                         <li class="col">
                             <input type="text" class="trans-{{language.current}}" ng-model="val" placeholder="Your translation goes here..." required />
@@ -193,7 +229,7 @@
                     </ul>
                     <ul class="row">
                         <li class="col">
-                            <button type="button" style="float: right" ng-click="sendUpdatedTranslation(trans);">{{ "Generic.Save" |t}}</button>
+                            <button type="button" ng-click="sendUpdatedTranslation(trans);">{{ "Generic.Save" |t}}</button>
                         </li>
                     </ul>
                     <div class="clear"></div>
