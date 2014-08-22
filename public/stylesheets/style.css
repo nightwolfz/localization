@@ -119,11 +119,24 @@ div#header h1 {
     vertical-align: middle;
 }
 
-.transTable .trans-en {
-    width: 86%;
+.transTable .trans {
+    width: 94%;
 }
-.transTable .trans-fr {
-    width: 80%;
+
+.transTable .col .save {
+    margin-right: 0.35em;
+    float: right;
+}
+
+.transTable .col .plusminus {
+    height: 25px;
+    width: 25px;
+    padding: 0;
+    margin-top: -3px;
+    border-radius: 16px;
+    line-height: 1em;
+    font-size: 1em;
+    outline: none;
 }
 
 .info {
