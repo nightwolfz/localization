@@ -36,7 +36,6 @@ section {
 
 
 div#header {
-    background-image: url("../Images/header-bg.jpg");
     background-position: 0 -150px;
     height: 70px;
     padding: 20px 0 10px 20px;
@@ -165,4 +164,17 @@ div#header h1 {
 
 .clear {
     clear: both;
+}
+
+.edit-in-place span {
+    cursor: pointer;
+}
+.edit-in-place input {
+    display: none;
+}
+.edit-in-place.active span {
+    display: none;
+}
+.edit-in-place.active input {
+    display: inline-block;
 }

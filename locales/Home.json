@@ -1,9 +1,16 @@
 {
-	"FirstName": {
-		"translationSets": ["Home"],
-		"values": {
-			"en": "First Name",
-			"fr": "Prénom"
-		}
-	}
+    "FirstName": {
+        "translationSets": [ "Home" ],
+        "values": {
+            "en": "First Name",
+            "fr": "Prénom"
+        }
+    },
+    "LastName": {
+        "translationSets": [ "Home" ],
+        "values": {
+            "en": "",
+            "fr": ""
+        }
+    }
 }

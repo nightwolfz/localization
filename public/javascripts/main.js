@@ -3,19 +3,45 @@ var app = angular.module('translateApp', ['ngRoute', 'ngCookies', 'pascalprecht.
 /*------------------------------------------------------------------------------
  Ryan's little helper (aka Overwrite translation filter, cos screw the rules!)
 -------------------------------------------------------------------------------*/
-app.filter('t', ['$parse', '$translate', 
-    function ($parse, $translate) {
-        return function (translationId, interpolateParams, interpolation) {
-            if (!window.angular.isObject(interpolateParams)) interpolateParams = $parse(interpolateParams)(this);
-            return $translate.instant(translationId + '.values.' + $translate.use(), interpolateParams, interpolation);
-        };
-    }
+app.filter('t', ['$parse', '$translate', '$sce', function ($parse, $translate) {
+    return function (translationId, interpolateParams, interpolation) {
+        if (!window.angular.isObject(interpolateParams)) interpolateParams = $parse(interpolateParams)(this);
+        return $translate.instant(translationId + '.values.' + $translate.use(), interpolateParams, interpolation);
+    };
+}]);
+
+/*------------------------------------------------------------------------------
+ Extend the translate directive
+-------------------------------------------------------------------------------*/
+angular.module('pascalprecht.translate').directive('translate', [
+  '$rootScope',
+  '$translate',
+  function ($rootScope, $translate) {
+    return {
+        compile: function (tElement) {
+            $rootScope.$on('$translateLoadingSuccess', function () {
+                tElement.removeClass($translate.cloakClassName());
+            });
+            tElement.addClass($translate.cloakClassName());
+            tElement.addClass('editable');
+        }
+    };
+}
 ]);
 
+/*------------------------------------------------------------------------------
+ Add inline editor
+-------------------------------------------------------------------------------*/
+InlineEditor.elementChanged = function(el, oldVal, newVal) {
+    console.log(oldVal);
+    console.log(newVal);
+};
+
+
+/*------------------------------------------------------------------------------
+ Initialize everything
+-------------------------------------------------------------------------------*/
 app.run(function($rootScope, $cookies, $translate) {
-    /*----------------------------------------
-                    Initialize
-    -----------------------------------------*/
     $rootScope.translator = {};
     $cookies.locale = $cookies.locale || "en";
     $translate.use($cookies.locale);
@@ -30,7 +56,6 @@ app.run(function($rootScope, $cookies, $translate) {
         options: $rootScope.availableLanguages,
         current: $cookies.locale
     };
-
 });
 
 /*----------------------------------------------------------------
@@ -41,8 +66,6 @@ app.factory('$transLoader', function ($http, $q, $timeout, $rootScope) {
         $rootScope.translator.selectedSet = options.selectedSet || 'Generic';
 
         if (!options || !options.url) throw new Error('Couldn\'t use urlLoader since no url is given!');
-
-        console.debug('LOADING DATA ' + $rootScope.translator.selectedSet);
 
         // Go fetch data from Bertrands service
         var deferred = $q.defer();
@@ -67,6 +90,7 @@ app.factory('$transLoader', function ($http, $q, $timeout, $rootScope) {
 
 app.config(function ($translateProvider) {
     $translateProvider.useLoader('$transLoader', { url: 'lang' }); //more than meets the eye!
+    //$translateProvider.usePostCompiling(true); // puts translated elements in a <span>
 });
 
 app.controller('langController', function ($scope, $http, $cookies, $location, $translate, $transLoader) {
@@ -175,6 +199,7 @@ app.controller('langController', function ($scope, $http, $cookies, $location, $
         if (newValue == oldValue) return;
         
         $translate.use($scope.language.current);
+        $cookies.locale = $scope.language.current;
         
         // Reload data from service
         $translate.refresh();
