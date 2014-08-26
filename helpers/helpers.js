@@ -11,22 +11,34 @@
 helpers.getTranslationsLocal = function (langSet) {
     
     langSet = langSet || false;
-    var result = new Object(), fileName, fileNameJson;
+    var result = new Object(), 
+        fileName, 
+        fileNameJson, 
+        localesPath = path.join(__dirname, '/../locales/');
     
     if (!langSet) {
-        var files = fs.readdirSync(path.join(__dirname, '/../locales/'));
+        var files = fs.readdirSync(localesPath);
         
-        for (f in files) {
+        for (var f in files) {
             fileName = files[f].replace('.json', '');
-            fileNameJson = require(path.join(__dirname, '/../locales/') + files[f]);
+            fileNameJson = require(localesPath + files[f]);
             result[fileName] = fileNameJson;
         }
-    } else {
-        result[langSet] = require(path.join(__dirname, '/../locales/') + langSet);
+    } 
+    else if (langSet.indexOf(',') != -1) {
+        var langSets = langSet.split(',');
+        
+        for (var s in langSets) {
+            if (langSets[s] == '') continue;
+            result[langSets[s]] = require(localesPath + langSets[s]);
+        }
+        
+    }
+    else {
+        result[langSet] = require(localesPath + langSet);
     }
     
-    console.log(result);
-    return JSON.stringify(result);
+    return result;
 };
 
 /*-----------------------------------
@@ -52,8 +64,34 @@ helpers.getTranslations = function() {
     };
     
     var req = http.request(options, callback).end();
-    console.log(req);
 };
 
+/*-----------------------------------
+ Fetch all translation set names
+-----------------------------------*/
+helpers.getTranslationSets = function () {
+    /*var buffer = '';
+    var options = {
+        host: 'localhost',
+        port: 3000,
+        path: '/getTranslationSets'
+    };
+    var callback = function (response) {
+        
+        response.on('data', function (chunk) {
+            buffer += chunk;
+        });
+        
+        response.on('end', function () {
+            console.log(req.data);
+            console.log(buffer); //JSON.parse(buffer);
+        });
+    };
+    
+    var req = http.request(options, callback).end();*/
+    var sets = ['Generic', 'Home'];
+    console.log(sets);
+    return sets;
+};
 
 module.exports = helpers;

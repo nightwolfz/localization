@@ -1,3 +1,15 @@
+function error(str) {
+    console.error("%c " + str + ' ', 'background: #fee; color: #c30');
+}
+function debug(str) {
+    console.debug("%c " + str + ' ', 'background: #bada55; color: #000');
+}
+function info(str) {
+    console.info("%c " + str + ' ', 'background: #CFE8FF; color: #000');
+}
+
+
+
 var app = angular.module('translateApp', ['ngRoute', 'ngCookies', 'pascalprecht.translate']);
 
 /*------------------------------------------------------------------------------
@@ -41,7 +53,7 @@ InlineEditor.elementChanged = function(el, oldVal, newVal) {
 /*------------------------------------------------------------------------------
  Initialize everything
 -------------------------------------------------------------------------------*/
-app.run(function($rootScope, $cookies, $translate) {
+app.run(function($rootScope, $cookies, $translate, $q, $http) {
     $rootScope.translator = {};
     $cookies.locale = $cookies.locale || "en";
     $translate.use($cookies.locale);
@@ -62,20 +74,24 @@ app.run(function($rootScope, $cookies, $translate) {
  Let's write a new loader, because the original is not suitable
 -----------------------------------------------------------------*/
 app.factory('$transLoader', function ($http, $q, $timeout, $rootScope) {
-    return function(options) {
+    return function (options) {
         $rootScope.translator.selectedSet = options.selectedSet || 'Generic';
 
         if (!options || !options.url) throw new Error('Couldn\'t use urlLoader since no url is given!');
-
-        // Go fetch data from Bertrands service
+        
         var deferred = $q.defer();
-        $http({
-            method: 'GET',
-            url: options.url // options.url + '/' + $rootScope.translator.selectedSet
+
+        // Get all translation sets
+        $http.get('getTranslationSets')
+        .success(function (data) {
+            $rootScope.translator.sets = data;
+            info(data);
         })
-        .success(deferred.resolve)
-        .error(function() {
-            deferred.reject(options.url);
+        .error(function(xhr, status) {
+            error(status);
+        }).then(function() {
+            // Go fetch data from Bertrands service
+            $http.get('lang/' + $rootScope.translator.sets).success(deferred.resolve);
         });
         
         // Use returned json for translations
@@ -125,7 +141,7 @@ app.controller('langController', function ($scope, $http, $cookies, $location, $
     -------------------------------------------*/
     $scope.translator.refresh = function() {
         var single = [];
-        console.warn($scope.translator.data);
+        debug("Refreshing table " + JSON.stringify($scope.translator.data, null));
         angular.forEach($scope.translator.data, function(trans, cat) {
 
             if ($scope.translator.selectedSet != cat) return;
@@ -153,10 +169,10 @@ app.controller('langController', function ($scope, $http, $cookies, $location, $
             'values': trans.values,
             'translationSets': trans.translationSets
         };
-
-        console.debug(JSON.stringify(json, null, 4));
-
-        /*$http({
+        
+        info(JSON.stringify(json, null, 4));
+        /*
+        $http({
             method  : 'PUT',
             url     : '/translations',
             data    : json,
@@ -168,7 +184,7 @@ app.controller('langController', function ($scope, $http, $cookies, $location, $
             $scope.translationsTable = $scope.translator.refresh();
             $translate.refresh();
         })
-            .error(function (data, status) {
+        .error(function (data, status) {
             $scope.errorMessage = 'FAILED! ' + status;
             $translate.refresh();
         });*/
@@ -184,14 +200,11 @@ app.controller('langController', function ($scope, $http, $cookies, $location, $
         
         // Reload data from service
         $translate.refresh();
-
-        $scope.translator.selectedSet = newValue;
-        
-        //$translate.useLoader('$transLoader', { url: 'lang', selectedSet: newValue});
         
         // Update translation editor
+        $scope.translator.selectedSet = newValue;
         $scope.translationsTable = $scope.translator.refresh();
-    }, true);
+    });
     
     $scope.$watch('language.current', function (newValue, oldValue) {
         
@@ -202,10 +215,10 @@ app.controller('langController', function ($scope, $http, $cookies, $location, $
         $cookies.locale = $scope.language.current;
         
         // Reload data from service
-        $translate.refresh();
+        //$translate.refresh();
         
         // Update translation editor
         $scope.translationsTable = $scope.translator.refresh();
-    }, true);
+    });
 
 });

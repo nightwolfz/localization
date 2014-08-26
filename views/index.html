@@ -23,7 +23,6 @@
                 <a href="/Maintenance"><img src="images/voo-logo.png"></a>
                 <h1 translate>Generic.Title</h1>
             </div>
-            
 
             <div class="error" ng-show="errorMessage"><span class="img-error">&nbsp;</span> {{errorMessage}}</div>
             <div class="info" ng-show="infoMessage"><span class="img-ok">&nbsp;</span> {{infoMessage}}</div>
@@ -33,7 +32,7 @@
                 <div style="float: left">
                     <span translate>Generic.ChangeTranslationSet</span>
                     <select ng-model="translator.selectedSet">
-                        <option ng-repeat="(k, trans) in translator.data">{{ k }}</option>
+                        <option ng-repeat="set in translator.sets">{{ set }}</option>
                     </select>
                 </div>
 
@@ -43,6 +42,10 @@
                 </div>
                 
                 <div class="clear"></div>
+            </div>
+            
+            <div class="transTable">
+                <div translate translate-values="{ test: 'test'}">Home.NestedTestString</div>
             </div>
             
             <div class="transTable">
@@ -67,6 +70,9 @@
                         </li>
                     </ul>
                     <ul class="row">
+                        <li class="col">
+                            <small><em>{{trans.key}}</em></small>
+                        </li>
                         <li class="col">
                             <button type="button" class="save" ng-click="translator.send(trans);" translate>Generic.Save</button>
                         </li>

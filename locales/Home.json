@@ -12,5 +12,12 @@
             "en": "",
             "fr": ""
         }
+    },
+    "NestedTestString": {
+        "translationSets": [ "Home" ],
+        "values": {
+            "en": "Bold <b>Hello</b>, what's your {{FirstName}} {{Home.FirstName}}?",
+            "fr": "Gros <b>Bonjour</b>, quel est votre {{Home.FirstName}}?"
+        }
     }
 }
