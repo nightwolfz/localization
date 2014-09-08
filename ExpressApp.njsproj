@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4a77448b-b1ee-4d5a-ba62-c6560b2c525b}</ProjectGuid>
     <ProjectHome />
-    <ProjectView>ShowAllFiles</ProjectView>
+    <ProjectView>ProjectFiles</ProjectView>
     <StartupFile>app.js</StartupFile>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -25,12 +25,16 @@
     <Content Include="package.json" />
     <Compile Include="app.js" />
     <Compile Include="helpers\helpers.js" />
-    <Compile Include="public\javascripts\angular-cookies.js" />
-    <Compile Include="public\javascripts\angular-route.js" />
-    <Compile Include="public\javascripts\angular-translate-loader-url.js" />
-    <Compile Include="public\javascripts\angular-translate.js" />
-    <Compile Include="public\javascripts\angular.js" />
-    <Compile Include="public\javascripts\main.js" />
+    <Compile Include="public\scripts\libs\angular-cookies.js" />
+    <Compile Include="public\scripts\libs\angular-route.js" />
+    <Compile Include="public\scripts\libs\angular-translate.js" />
+    <Compile Include="public\scripts\libs\angular.js" />
+    <Compile Include="public\scripts\controllers.js" />
+    <Compile Include="public\scripts\main.js" />
+    <Compile Include="public\scripts\directives.js" />
+    <Compile Include="public\scripts\factories.js" />
+    <Compile Include="public\scripts\filters.js" />
+    <Compile Include="public\scripts\libs\inlineeditor.js" />
     <Compile Include="routes\lang.js" />
     <Compile Include="routes\index.js" />
     <Content Include="public\images\glyphicons-halflings-white.png" />
@@ -45,7 +49,8 @@
     <Folder Include="locales\" />
     <Folder Include="public" />
     <Folder Include="public\images" />
-    <Folder Include="public\javascripts" />
+    <Folder Include="public\scripts\" />
+    <Folder Include="public\scripts\libs\" />
     <Folder Include="public\stylesheets" />
     <Folder Include="routes" />
     <Folder Include="views" />
