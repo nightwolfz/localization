@@ -779,7 +779,7 @@ function($interpolate) {
         */
 
         console.warn(interpolateParams);
-        //console.debug($interpolate(string)(interpolateParams || {}));
+        console.debug($interpolate(string)(interpolateParams || {}));
         // Ryan out!
 
         if ($sanitizeValueStrategy) {
@@ -818,7 +818,7 @@ function($translate, $q, $interpolate, $compile, $parse, $rootScope) {
                 iAttr.$observe('translate', function (translationId) {
                     if (angular.equals(translationId, '') || !angular.isDefined(translationId)) {
                         scope.translationId = $interpolate(iElement.text().replace(/^\s+|\s+$/g, ''))(scope.$parent);
-                        console.debug(scope.translationId); ///////////////////////
+                        console.log(scope.translationId); ///////////////////////
                     } else {
                         scope.translationId = translationId;
                     }

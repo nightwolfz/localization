@@ -1,3 +1,6 @@
+/*------------------------------------------------------------------------------
+ Formatted logging
+-------------------------------------------------------------------------------*/
 function error(str) {
     console.error("%c " + str + ' ', 'background: #fee; color: #c30');
 }
@@ -41,6 +44,6 @@ app.run(function($rootScope, $cookies, $translate) {
 });
 
 app.config(function ($translateProvider) {
-    $translateProvider.useLoader('$transloader', { url: 'lang' }); // more than meets the eye!
+    $translateProvider.useLoader('LoaderFactory', { url: 'lang' });
     //$translateProvider.usePostCompiling(true); // also puts translated elements in a <span>
 });
