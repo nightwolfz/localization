@@ -10,7 +10,7 @@ app.factory('LoaderFactory', function ($http, $q, $timeout, $rootScope) {
         var deferred = $q.defer();
         
         // Get all translation sets
-        $http.get('getTranslationSets')
+        $http.get('/api/translationsetnames')
         .success(function (data) {
             $rootScope.translator.sets = data;
             info(data);
@@ -19,7 +19,7 @@ app.factory('LoaderFactory', function ($http, $q, $timeout, $rootScope) {
             error(status);
         }).then(function () {
             // Go fetch data from Bertrands service
-            $http.get('lang/' + $rootScope.translator.sets).success(deferred.resolve);
+            $http.get('api/translationset/' + $rootScope.translator.sets).success(deferred.resolve);
         });
         
         // Use returned json for translations

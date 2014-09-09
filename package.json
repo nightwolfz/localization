@@ -1,12 +1,13 @@
 {
   "name": "voo-poc-restify",
   "dependencies": {
-    "restify": "latest",
-    "look": "^0.1.3",
+    "async": "^0.9.0",
     "bunyan": "^1.0.0",
+    "debug": "^2.0.0",
+    "look": "^0.1.3",
     "mongoose": "^3.8.14",
-    "underscore": "^1.6.0",
-    "async": "^0.9.0"
+    "restify": "latest",
+    "underscore": "^1.6.0"
   },
   "devDependencies": {
     "cucumber": "^0.4.1",

@@ -1,4 +1,5 @@
 require('look').start();
+
 var restify = require('restify'),
 	bunyan = require('bunyan'),
 	server = restify.createServer({
@@ -44,6 +45,6 @@ server.on('uncaughtException', function (req, res, route, err) {
 	}
 });
 
-server.listen(8000, function() {
+server.listen(3000, function() {
   console.log('%s listening at %s', server.name, server.url);
 });

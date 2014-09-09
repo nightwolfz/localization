@@ -3,3 +3,4 @@
 node_modules
 /.ntvs_analysis.dat
 /*.user
+*.log

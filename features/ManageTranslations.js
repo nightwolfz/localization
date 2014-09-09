@@ -22,11 +22,11 @@ module.exports = function(){
 		var theRow = table.hashes()[0],
 			world = this;
 
-		this.client.get('/api/translationset/' + translationSetName, function(err, req, res, obj) {
-			if(err) return callback(err);
+	    this.client.get('/api/translationset/' + translationSetName, function(err, req, res, obj) {
+	        if (err) return callback(err);
 
-			world.featureParsing.checkTranslation(obj, table.hashes()[0], world, callback);
-		})
+	        world.featureParsing.checkTranslation(obj, table.hashes()[0], world, callback);
+	    });
 	});	
 
 	this.Then(/^the new translation is returned$/, function (table, callback) {
