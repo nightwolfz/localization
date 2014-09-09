@@ -1,17 +1,24 @@
 {
-  "name": "ExpressApp",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "start": "node ./bin/www"
-  },
+  "name": "voo-poc-restify",
   "dependencies": {
-    "body-parser": "^1.6.2",
-    "cookie-parser": "^1.3.2",
-    "debug": "^0.7.4",
-    "ejs": "^0.8.8",
-    "express": "^4.8.2",
-    "morgan": "^1.2.2",
-    "static-favicon": "^1.0.2"
+    "restify": "latest",
+    "look": "^0.1.3",
+    "bunyan": "^1.0.0",
+    "mongoose": "^3.8.14",
+    "underscore": "^1.6.0",
+    "async": "^0.9.0"
+  },
+  "devDependencies": {
+    "cucumber": "^0.4.1",
+    "chai": "^1.9.1",
+    "chai-things": "^0.2.0"
+  },
+  "scripts": {
+    "start": "node server",
+    "start-debug": "node-debug -p 8081 server",
+    "test": "node node_modules/cucumber/bin/cucumber -f pretty",
+    "test-debug": "node-debug -p 8082 node_modules/cucumber/bin/cucumber -f pretty",
+    "test-current": "node node_modules/cucumber/bin/cucumber -t @current -f pretty",
+    "test-current-debug": "node-debug -p 8082 node_modules/cucumber/bin/cucumber -t @current -f pretty"
   }
 }
