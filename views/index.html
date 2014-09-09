@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html ng-app="translateApp">
+    <head>
+        <meta charset="utf-8">
+        <title>Translation Manager</title>
+        
+        <link rel="shortcut icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+        <link rel='stylesheet' href="/stylesheets/style.css" />
+
+        <script src="/scripts/libs/angular.js"></script>
+        <script src="/scripts/libs/angular-route.js"></script>
+        <script src="/scripts/libs/angular-cookies.js"></script>
+        <script src="/scripts/libs/angular-translate.js"></script>
+        <script src="/scripts/libs/inlineeditor.js"></script> <!-- http://iharder.sourceforge.net/current/misc/inlineeditor/ -->
+        
+
+        <script src="/scripts/main.js"></script>
+        <script src="/scripts/filters.js"></script>
+        <script src="/scripts/directives.js"></script>
+        <script src="/scripts/factories.js"></script>
+        <script src="/scripts/controllers.js"></script>
+
+    </head>
+    <body>
+
+        <section ng-controller="langController">
+            
+            <div id="header">
+                <a href="/Maintenance"><img src="images/voo-logo.png"></a>
+                <h1 translate>Generic.Title</h1>
+            </div>
+
+            <div class="error" ng-show="errorMessage"><span class="img-error">&nbsp;</span> {{errorMessage}}</div>
+            <div class="info" ng-show="infoMessage"><span class="img-ok">&nbsp;</span> {{infoMessage}}</div>
+
+            <div class="header">
+                
+                <div style="float: left">
+                    <span translate>Generic.ChangeTranslationSet</span>
+                    <select ng-model="translator.selectedSet">
+                        <option ng-repeat="set in translator.sets">{{ set }}</option>
+                    </select>
+                </div>
+
+                <div style="float: right">
+                    <span translate>Generic.ChangeLanguage</span>
+                    <select ng-model="language.current" ng-change="language.change()" ng-options="lang.key as lang.name for lang in language.options"></select>
+                </div>
+                
+                <div class="clear"></div>
+            </div>
+            
+            <div class="transTable">
+                <div translate translate-values='{ "Home.FirstName": "HEHHEHEHE"}'>Home.NestedTestString</div>
+            </div>
+            
+            <div class="transTable">
+                <div ng-repeat="(k, trans) in translationsTable">
+                    <ul class="row">
+                        <li class="col clear">
+                            <button class="plusminus" ng-click="translator.add(trans)"> + </button>
+                        </li>
+                        <li class="col">
+                            <button class="plusminus" ng-click="translator.remove(trans)"> - </button>
+                        </li>
+                        <li class="col" ng-repeat="set in trans.translationSets">
+                            <input type="text" style="width:100px" ng-model="set" pattern="[a-zA-Z0-9\.\_]{3,16}" required />
+                        </li>
+                    </ul>
+                    <ul class="row" ng-repeat="(lang, val) in trans.values">
+                        <li class="col">
+                            <input type="text" ng-model="lang" pattern="[a-z]{2}" ng-disabled="1" style="width:14px;" required />
+                        </li>
+                        <li class="col">
+                            <input type="text" class="trans" ng-model="val" placeholder="Your translation goes here..." required />
+                        </li>
+                    </ul>
+                    <ul class="row">
+                        <li class="col">
+                            <small><em>{{trans.key}}</em></small>
+                        </li>
+                        <li class="col">
+                            <button type="button" class="save" ng-click="translator.send(trans);" translate>Generic.Save</button>
+                        </li>
+                    </ul>
+                    <div class="clear"></div>
+                </div>
+            </div>
+
+        </section>
+
+    </body>
+</html>

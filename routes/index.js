@@ -24,13 +24,9 @@ router.get('/edit/:translationSet', function (req, res) {
     res.render('index', { title: 'Express', translationSet: req.params.translationSet });
 });
 
-router.get('/api', function (req, res) {
-    
-    // Inject translations to view
-    res.locals.allLanguages = helper.getTranslations();
-    
-    // Render the view
-    res.render('index', { title: 'Express', translationSet: '' });
+router.get('/getTranslationSets', function(req, res) {
+    var sets = ['Generic', 'Home'];
+    res.json(sets);
 });
 
 
