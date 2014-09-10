@@ -1,7 +1,9 @@
-module.exports = function(){
+module.exports = function (){
+
 	var translationSetNames,
 		_ = require('underscore'),
-		async = require('async');
+        async = require('async');
+
 	this.World = require(process.cwd() + '/features/support/world.js').World;
 	this.Given(/^translation sets$/, function (table, callback) {
 		var translationSetToCreate,

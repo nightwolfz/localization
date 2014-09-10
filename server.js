@@ -1,7 +1,7 @@
 require('look').start();
 
 var restify = require('restify'),
-	bunyan = require('bunyan'),
+    bunyan = require('bunyan'),
 	server = restify.createServer({
 		name: 'translationManager',
 		log: bunyan.createLogger({
@@ -18,13 +18,13 @@ var restify = require('restify'),
 		})
 	}),
 	translationRoutes = require('./routes/translation'),
-	translationSetRoutes = require('./routes/translationSet'),
+    translationSetRoutes = require('./routes/translationSet'),
+    seed = require('./migrations/seed'),
+    models = require('./models/models'),
 	mongoose = require('mongoose');
 
 server.use(restify.requestLogger());
 server.use(restify.bodyParser());
-
-
 server.get('/api/translationsetnames', translationSetRoutes.getNames);
 server.get('/api/translationset/:name', translationSetRoutes.get);
 server.post('/api/translation', translationRoutes.post);

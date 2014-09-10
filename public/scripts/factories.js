@@ -9,16 +9,15 @@ app.factory('LoaderFactory', function ($http, $q, $timeout, $rootScope) {
         
         var deferred = $q.defer();
         
-        // Get all translation sets
+        // Get translations from mongoDb
         $http.get('/api/translationsetnames')
         .success(function (data) {
-            $rootScope.translator.sets = data;
-            info(data);
+            $rootScope.translator.sets = data || ["Generic"];
+            console.log($rootScope.translator.sets);
         })
         .error(function (xhr, status) {
             error(status);
         }).then(function () {
-            // Go fetch data from Bertrands service
             $http.get('api/translationset/' + $rootScope.translator.sets).success(deferred.resolve);
         });
         

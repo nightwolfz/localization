@@ -9,10 +9,10 @@ module.exports = function() {
 		url: 'http://localhost:8000'
 	});
 
-	this.emptyDatabase = function(callback){
-		models.connection.connection.db.dropDatabase();
-		callback();
-	}
+    this.emptyDatabase = function(cb) {
+        models.connection.connection.db.dropDatabase();
+        cb();
+    };
 
 	this.featureParsing = {
 		getTranslationToCreate: function(translationLine){

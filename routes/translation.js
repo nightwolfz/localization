@@ -1,6 +1,5 @@
-
+var _ = require('lodash');
 var models = require(process.cwd() + '/models/models'),
-	_ = require('underscore'),
 	result = {},
 	compacter = require(process.cwd() + '/routes/compacter'),
 	async = require('async');
@@ -43,9 +42,7 @@ result.post = function (req, res, next) {
 	async.parallel(translationSetCreations, function (err, results){
 		if(err) return next(err);
 
-		translationModel.update({ key: translationToUpsert.key }, 
-			translationToUpsert, 
-			{upsert: true}, function (err, numberOfRecs, translation){
+		translationModel.update({ key: translationToUpsert.key }, translationToUpsert, { upsert: true }, function (err, numberOfRecs, translation){
 			if(err) return next(err);
 
 			var response = {};

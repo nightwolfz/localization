@@ -1,6 +1,7 @@
-module.exports = function(){
-	this.World = require(process.cwd() + '/features/support/world.js').World,
-	_ = require('underscore');
+module.exports = function () {
+
+    this.World = require(process.cwd() + '/features/support/world.js').World;
+	var _ = require('lodash');
 
 	var translationToCreate = {},
 		createdTranslation,
