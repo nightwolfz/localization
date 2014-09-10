@@ -4,6 +4,10 @@ var models = require(process.cwd() + '/models/models'),
 	compacter = require(process.cwd() + '/routes/compacter'),
 	async = require('async');
 
+
+/*------------------------------------------
+  POST
+-------------------------------------------*/
 result.post = function (req, res, next) {
 	var translationToUpsert = { 
 			values: [],
