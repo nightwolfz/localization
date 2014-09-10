@@ -11,7 +11,7 @@ module.exports = function (){
     -------------------------------------------*/
     result.get = function (req, res, next) {
 
-        var selectedSet = req.params.name.split(',');
+        var selectedSet = _.uniq(req.params.name.split(','));
         var lastIndex = selectedSet.length - 1;
         var response = {};
 

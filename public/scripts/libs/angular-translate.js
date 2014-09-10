@@ -776,10 +776,7 @@ function($interpolate) {
             match = match.replace(/{{(.*)}}/, "$1");
             interpolateParams[match] = match;// $translateInterpolator.instant('{{'+ match+'}}!', { match: 'John Doe' });;
         });
-        */
-
-        console.warn(interpolateParams);
-        console.debug($interpolate(string)(interpolateParams || {}));
+        console.warn(interpolateParams); console.debug($interpolate(string)(interpolateParams || {}));*/
         // Ryan out!
 
         if ($sanitizeValueStrategy) {
@@ -787,7 +784,6 @@ function($interpolate) {
         }
             
         return $interpolate(string)(interpolateParams || {});
-        //return string;
     };
 
     return $translateInterpolator;
@@ -818,16 +814,10 @@ function($translate, $q, $interpolate, $compile, $parse, $rootScope) {
                 iAttr.$observe('translate', function (translationId) {
                     if (angular.equals(translationId, '') || !angular.isDefined(translationId)) {
                         scope.translationId = $interpolate(iElement.text().replace(/^\s+|\s+$/g, ''))(scope.$parent);
-                        console.log(scope.translationId); ///////////////////////
                     } else {
                         scope.translationId = translationId;
                     }
                 });
-
-                /*var interpolateParams = { "Home.FirstName": "PIE" };
-                scope.$parent.$watch(function () {
-                    angular.extend(scope.interpolateParams, $parse(interpolateParams)(scope.$parent));
-                });*/
 
                 iAttr.$observe('translateDefault', function (value) {
                     scope.defaultText = value;
@@ -835,7 +825,6 @@ function($translate, $q, $interpolate, $compile, $parse, $rootScope) {
 
                 if (translateValuesExist) {
                     iAttr.$observe('translateValues', function (interpolateParams) {
-                        console.debug(interpolateParams);
                         if (interpolateParams) {
                             scope.$parent.$watch(function() {
                                 angular.extend(scope.interpolateParams, $parse(interpolateParams)(scope.$parent));
@@ -844,7 +833,6 @@ function($translate, $q, $interpolate, $compile, $parse, $rootScope) {
                     });
                 }
                 if (translateValueExist) {
-                    console.debug(translateValueExist);
                     var fn = function(attrName) {
                         iAttr.$observe(attrName, function(value) {
                             scope.interpolateParams[angular.lowercase(attrName.substr(14, 1)) + attrName.substr(15)] = value;
@@ -856,8 +844,6 @@ function($translate, $q, $interpolate, $compile, $parse, $rootScope) {
                         }
                     }
                 }
-                
-                
 
                 var applyElementContent = function(value, scope, successful) {
                     if (!successful && typeof scope.defaultText !== 'undefined') {

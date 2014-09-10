@@ -18,9 +18,13 @@
       Flatten multidimensional array to single
     -------------------------------------------*/
     $scope.translator.refresh = function () {
+
+        console.log('------');
         $scope.translator.table = TranslationFactory.refresh(
                     $scope.translator.data, 
                     $scope.translator.selectedSet);
+        
+        console.log($scope.translator.table);
     };
     
     /*------------------------------------------
@@ -34,14 +38,14 @@
     $scope.$watch('translator.selectedSet', function (newValue, oldValue) {
 
         // Ignore initial setup.
-        if (newValue != oldValue) return;
+        if (newValue == oldValue) return;
 
         // Reload data from service
         $translate.refresh();
 
         // Update translation editor
         $scope.translator.selectedSet = newValue;
-        $scope.translator.table = $scope.translator.refresh();
+        $scope.translator.refresh();
     });
     
     $scope.$watch('language.current', function (newValue, oldValue) {
@@ -56,7 +60,7 @@
         //$translate.refresh();
         
         // Update translation editor
-        $scope.translator.table = $scope.translator.refresh();
+        $scope.translator.refresh();
     });
 
 });

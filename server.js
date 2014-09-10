@@ -8,11 +8,11 @@ var restify = require('restify'),
 			name: 'serverLog',
 			streams: [
 			{
-				level: 'info',
+				level: 'warn',
 				path: process.cwd() + '/log/translationsManager.log'  // log ERROR and above to a file
 			},
 			{
-				level: 'info',
+				level: 'warn',
 				stream: process.stdout  // log ERROR and above to a file
 			}]
 		})

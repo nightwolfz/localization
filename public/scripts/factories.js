@@ -13,20 +13,22 @@ app.factory('LoaderFactory', function ($http, $q, $timeout, $rootScope) {
         $http.get('/api/translationsetnames')
         .success(function (data) {
             $rootScope.translator.sets = data || ["Generic"];
-            console.log($rootScope.translator.sets);
         })
         .error(function (xhr, status) {
             error(status);
         }).then(function () {
-            $http.get('api/translationset/' + $rootScope.translator.sets).success(deferred.resolve);
+            $http.get('api/translationset/' + $rootScope.translator.sets + ',Generic').success(deferred.resolve);
         });
         
         // Use returned json for translations
         deferred.promise.then(function (data) {
-            $rootScope.translator.data = data;
-            //@TODO: Remove when deploying
+
+            //@TODO: Remove commented code when deploying
             //$rootScope.$digest(); // manually propagate changes
-            //setTimeout(function(){}, 1000); //simulate network latency 
+
+            setTimeout(function() {
+                $rootScope.translator.data = data;
+            }, 400); // Simulate network latency 
         });
         
         return deferred.promise;
@@ -37,7 +39,7 @@ app.factory('LoaderFactory', function ($http, $q, $timeout, $rootScope) {
 /*----------------------------------------------------------------
   Translation Manager
 -----------------------------------------------------------------*/
-app.factory('TranslationFactory', function TranslationFactory() {
+app.factory('TranslationFactory', function TranslationFactory($http) {
     
     return {
         add: function (trans) {
@@ -84,10 +86,10 @@ app.factory('TranslationFactory', function TranslationFactory() {
             };
             
             info(JSON.stringify(json, null, 4));
-            /*
+            
             $http({
-                method  : 'PUT',
-                url     : '/translations',
+                method  : 'POST',
+                url     : '/api/translation',
                 data    : json,
                 dataType: "json",
                 headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // pass info as form data (not request payload)
@@ -100,17 +102,8 @@ app.factory('TranslationFactory', function TranslationFactory() {
             .error(function (data, status) {
                 $scope.errorMessage = 'FAILED! ' + status;
                 $translate.refresh();
-            });*/
+            });
         }
-    };
-
-
-    TranslationFactory.enable = function (trans) {
-        trans.enabled = !trans.enabled;
-    };
-
-    TranslationFactory.enable = function (trans) {
-        trans.enabled = !trans.enabled;
     };
 
 });

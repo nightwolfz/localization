@@ -1,7 +1,8 @@
 ﻿/*------------------------------------------------------------------------------
- Extend the translate directive
+ Extend the translate directive (needed for inline editing in the future)
+ Change "translateEditable" to "translate" to extend existing directive
 -------------------------------------------------------------------------------*/
-angular.module('pascalprecht.translate').directive('translate', [
+angular.module('pascalprecht.translate').directive('translateEditable', [
   '$rootScope',
   '$translate',
   function ($rootScope, $translate) {
