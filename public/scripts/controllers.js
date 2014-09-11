@@ -1,4 +1,8 @@
 ﻿app.controller('langController', function langController($scope, $http, $cookies, $location, $translate, TranslationFactory) {
+    
+    
+    
+    
     /*------------------------------------------
        Add translation set
     -------------------------------------------*/
@@ -18,15 +22,16 @@
       Flatten multidimensional array to single
     -------------------------------------------*/
     $scope.translator.refresh = function () {
-
-        console.log('------');
-        $scope.translator.table = TranslationFactory.refresh(
-                    $scope.translator.data, 
-                    $scope.translator.selectedSet);
-        
-        console.log($scope.translator.table);
+        $scope.translator.table = TranslationFactory.refresh($scope.translator);
     };
     
+    /*------------------------------------------
+      Refresh on page load
+    -------------------------------------------*/
+    $scope.$watch('translator.data', function (newValue, oldValue) {
+        if (newValue != oldValue) $scope.translator.refresh();
+    });
+
     /*------------------------------------------
        Update a translation value
     -------------------------------------------*/
@@ -45,7 +50,7 @@
 
         // Update translation editor
         $scope.translator.selectedSet = newValue;
-        $scope.translator.refresh();
+        //$scope.translator.refresh();
     });
     
     $scope.$watch('language.current', function (newValue, oldValue) {
@@ -58,9 +63,6 @@
         
         // Reload data from service
         //$translate.refresh();
-        
-        // Update translation editor
-        $scope.translator.refresh();
     });
 
 });

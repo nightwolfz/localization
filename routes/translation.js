@@ -9,52 +9,87 @@ var models = require(process.cwd() + '/models/models'),
   POST
 -------------------------------------------*/
 result.post = function (req, res, next) {
-	var translationToUpsert = { 
-			values: [],
-			translationSets: []
-		},
-		keyName,
-		translationSetCreations = [],
+	var json = JSON.parse(req.body),
+		translationSetFunctions = [],
 		translationModel = models.translationModel,
-		translationSetModel = models.translationSetModel;
+        translationSetModel = models.translationSetModel;
 
-	for(property in req.body){
-		if(req.body.hasOwnProperty(property)){
-			translationToUpsert.key = property;
-		}
-	}
-	if(req.body[translationToUpsert.key].values){
-		var values = req.body[translationToUpsert.key].values;
-		for(property in values){
-			if(values.hasOwnProperty(property)){
-				translationToUpsert.values.push({lang: property, value: values[property]});
-			}
-		}			
-	}
+    _.each(json, function (translation, translationKey) {
 
-	_.each(req.body[translationToUpsert.key].translationSets, function(translationSetName){
-		translationSetCreations.push(function (callback){
-			translationSetModel.findOneAndUpdate({ name: translationSetName }, { name: translationSetName }, {upsert: true}, function (err, translationSet){
-				if(err) return callback(err);
+        var values = translation.values || null;
+        var sets = json[translationKey] || [];
+        var translationToUpsert = {
+            values: values,
+            translationSets: []
+        };
+
+        _.each(sets.translationSets, function (setName) {
+            translationSetFunctions.push(function (callback) {
+                translationSetModel.findOneAndUpdate({ name: setName }, { name: setName }, { upsert: true }, function (err, translationSet) {
+                    if (err) return callback(err);
+
+                    console.log('Adding set -------------------');
+                    console.log(translationSet);
+                    console.log('/Adding set ------------------');
+
+                    translationToUpsert.translationSets.push(translationSet._id);
+                    
+
+                    callback();
+                });
+            });
+        });
+        
+        async.parallel(translationSetFunctions, function (err, results){
+            if (err) return console.log(err);
+
+            console.log(translationToUpsert);
+
+		    translationModel.update({ key: translationKey }, translationToUpsert, { upsert: true }, function (erro, translationSet){
+                if (erro) return console.log(erro);
+
+			    var response = {};
+                response[translationKey] = compacter.compactDocument(translationToUpsert);
+                
+			    res.send(response);
+		    });
+	    });
+
+    });
+
+
+
+    /*_.each(json, function(property) {
+        translationToUpsert.key = property;
+    });
+
+    var values = json[translationToUpsert.key].values || null;
+
+    _.each(values, function (property) {
+        translationToUpsert.values.push({ lang: property, value: values[property] });
+    });
+
+	_.each(json[translationToUpsert.key].translationSets, function(setName){
+		translationSetFunctions.push(function (callback){
+			translationSetModel.findOneAndUpdate({ name: setName }, { name: setName }, {upsert: true}, function (err, translationSet){
+				if(err) return console.log(err);
 
 				translationToUpsert.translationSets.push(translationSet._id);
-				callback();
 			});
 		});
 	});
 
-	async.parallel(translationSetCreations, function (err, results){
-		if(err) return next(err);
+	async.parallel(translationSetFunctions, function (err, results){
+		if(err) return console.log(err);
 
 		translationModel.update({ key: translationToUpsert.key }, translationToUpsert, { upsert: true }, function (err, numberOfRecs, translation){
-			if(err) return next(err);
+			if(err) return console.log(err);
 
 			var response = {};
 			response[translationToUpsert.key] = compacter.compactDocument(translationToUpsert);
 			res.send(response);
-			next();
 		});		
-	});
+	});*/
 
 
 };

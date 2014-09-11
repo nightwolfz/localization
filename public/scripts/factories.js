@@ -3,7 +3,7 @@
 -----------------------------------------------------------------*/
 app.factory('LoaderFactory', function ($http, $q, $timeout, $rootScope) {
     return function (options) {
-        $rootScope.translator.selectedSet = options.selectedSet || 'Generic';
+        $rootScope.translator.selectedSet = options.selectedSet || 'Home';
         
         if (!options || !options.url) throw new Error('Couldn\'t use urlLoader since no url is given!');
         
@@ -12,7 +12,7 @@ app.factory('LoaderFactory', function ($http, $q, $timeout, $rootScope) {
         // Get translations from mongoDb
         $http.get('/api/translationsetnames')
         .success(function (data) {
-            $rootScope.translator.sets = data || ["Generic"];
+            $rootScope.translator.sets = data || ["Home"];
         })
         .error(function (xhr, status) {
             error(status);
@@ -28,6 +28,7 @@ app.factory('LoaderFactory', function ($http, $q, $timeout, $rootScope) {
 
             setTimeout(function() {
                 $rootScope.translator.data = data;
+                $rootScope.$digest();
             }, 400); // Simulate network latency 
         });
         
@@ -59,12 +60,15 @@ app.factory('TranslationFactory', function TranslationFactory($http) {
             trans.enabled = !trans.enabled;
         },
 
-        refresh: function (data, selectedSet) {
-            var single = [];
-            debug("Refreshing table " + JSON.stringify(data, null));
-            angular.forEach(data, function (trans, cat) {
+        refresh: function (translator) {
+
+            debug("Refreshing table " + JSON.stringify(translator.data, null));
             
-                if (selectedSet != cat) return;
+            var single = [];
+
+            angular.forEach(translator.data, function (trans, cat) {
+            
+                if (translator.selectedSet != cat) return;
             
                 for (key in trans) {
                     single.push({
@@ -74,6 +78,7 @@ app.factory('TranslationFactory', function TranslationFactory($http) {
                     });
                 }
             }, single);
+
             return single;
         },
 
@@ -95,13 +100,16 @@ app.factory('TranslationFactory', function TranslationFactory($http) {
                 headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // pass info as form data (not request payload)
             })
             .success(function (data) {
-                $scope.infoMessage = data.message;
+                info("Success!");
+                /*$scope.infoMessage = data.message;
                 $scope.translator.table = $scope.translator.refresh();
-                $translate.refresh();
+                $translate.refresh();*/
             })
-            .error(function (data, status) {
-                $scope.errorMessage = 'FAILED! ' + status;
-                $translate.refresh();
+            .error(function (error, status) {
+                console.error("%c [" + error.code + '] ' + error.message, 'background: #fee; color: #c30');
+                //error('[' + error.code + '] ' + error.message);
+                /*$scope.errorMessage = 'FAILED! ' + status;
+                $translate.refresh();*/
             });
         }
     };

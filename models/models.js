@@ -3,27 +3,20 @@ module.exports = function(){
         result = {};
     
 	result.connection = mongoose.connect('mongodb://localhost/webl8n');
-
-    result.translationSetModel = mongoose.model('translationSet', 
-            new mongoose.Schema({
-            name: { type: String }
-        })
-    );
-
-    result.translatedValueModel = mongoose.model('translatedValue', 
-        new mongoose.Schema({
-            lang : String,
-            value : String
-        })
-    );
-
-    result.translationModel = mongoose.model('translation', 
-        new mongoose.Schema({
-            translationSet : { type: mongoose.Schema.Types.ObjectId, ref: 'translationSet' },
-            key : { type: String, unique: true },
-            values : [ result.TranslatedValueSchema ]
-        })
-    );
+    
+    // Schemas
+    var translationSetSchema = new mongoose.Schema({
+        name: { type: String }
+    });
+    var translationModelSchema = new mongoose.Schema({
+        translationSets: [ { type: mongoose.Schema.Types.ObjectId, ref: 'translationSet' } ],
+        key: { type: String, unique: true },
+        values: Object
+    });
+    
+    // Models: Use these to query mongoDb.
+    result.translationSetModel = mongoose.model('translationSet', translationSetSchema);
+    result.translationModel = mongoose.model('translation', translationModelSchema);
     
     // Seed some initial data
     var seed = require(process.cwd() + '/migrations/seed');

@@ -3,7 +3,6 @@
     // DO NOT SEED
     return;
 
-
     var mongoose = require('mongoose');
 
     // Enable promises
@@ -17,7 +16,7 @@
 
 
     var translationSetModel = mongoose.model('translationSet');
-    var translatedValueModel = mongoose.model('translatedValue');
+    //var translatedValueModel = mongoose.model('translatedValue');
     var translationModel = mongoose.model('translation');
 
     var newSet = new translationSetModel({ name: 'Generic' }); newSet.save();
@@ -28,43 +27,43 @@
     -------------------------------------------*/
 
     new translationModel({
-        translationSet : newSet, key : 'Title',
-        values : [ 
-            new translatedValueModel({lang : 'en', value : 'Translation Manager'}),
-            new translatedValueModel({lang : 'fr', value : 'Gestionnaire de traduction'})
-        ]
+        translationSets : [newSet], key : 'Title',
+        values : {
+            'en': 'Translation Manager',
+            'fr': 'Gestionnaire de traduction'
+        }
     }).save(function (err) { if (err) return handleError(err); });
     
     new translationModel({
-        translationSet : newSet, key : 'ChangeLanguage',
-        values : [ 
-            new translatedValueModel({ lang : 'en', value : 'Change language' }),
-            new translatedValueModel({ lang : 'fr', value : 'Changer de langue' })
-        ]
+        translationSets : [newSet], key : 'ChangeLanguage',
+        values : {
+            'en': 'Change language',
+            'fr': 'Changer de langue'
+        }
     }).save(function (err) { if (err) return handleError(err); });
     
     new translationModel({
-        translationSet : newSet, key : 'ChangeTranslationSet',
-        values : [ 
-            new translatedValueModel({ lang : 'en', value : 'Translation set' }),
-            new translatedValueModel({ lang : 'fr', value : 'Set de traduction' })
-        ]
+        translationSets : [newSet], key : 'ChangeTranslationSet',
+        values : { 
+            'en': 'Translation set',
+            'fr': 'Set de traduction'
+        }
     }).save(function (err) { if (err) return handleError(err); });
 
     new translationModel({
-        translationSet : newSet, key : 'Create',
-        values : [ 
-            new translatedValueModel({ lang : 'en', value : 'Create' }),
-            new translatedValueModel({ lang : 'fr', value : 'Créer' })
-        ]
+        translationSets : [newSet], key : 'Create',
+        values : { 
+            'en': 'Create',
+            'fr': 'Créer'
+        }
     }).save(function (err) { if (err) return handleError(err); });
     
     new translationModel({
-        translationSet : newSet, key : 'Save',
-        values : [ 
-            new translatedValueModel({ lang : 'en', value : 'Save' }),
-            new translatedValueModel({ lang : 'fr', value : 'Sauvegarder' })
-        ]
+        translationSets : [newSet], key : 'Save',
+        values : { 
+            'en': 'Save',
+            'fr': 'Sauvegarder'
+        }
     }).save(function (err) { if (err) return handleError(err); });
     
 
@@ -72,27 +71,19 @@
       Home
     -------------------------------------------*/
     new translationModel({
-        translationSet : newSet2, key : 'FirstName',
-        values : [ 
-                new translatedValueModel({ lang : 'en', value : 'First Name' }),
-                new translatedValueModel({ lang : 'fr', value : 'Prénom' })
-            ]
+        translationSets : [newSet, newSet2], key : 'FirstName',
+        values : { 
+            'en': 'First Name',
+            'fr': 'Prénom'
+        }
     }).save(function (err) { if (err) return handleError(err); });
 
     new translationModel({
-        translationSet : newSet2, key : 'LastName',
-        values : [ 
-                new translatedValueModel({ lang : 'en', value : 'LastName' }),
-                new translatedValueModel({ lang : 'fr', value : 'Nom' })
-            ]
-    }).save(function (err) { if (err) return handleError(err); });
-
-    new translationModel({
-        translationSet : newSet2, key : 'NestedTestString',
-        values : [ 
-                new translatedValueModel({ lang : 'en', value : "Bold <b>Hello</b>, what's your {{Home.FirstName}} ?" }),
-                new translatedValueModel({ lang : 'fr', value : "Gros <b>Bonjour</b>, quel est votre {{Home.FirstName}} ?" })
-            ]
+        translationSets : [newSet, newSet2], key : 'LastName',
+        values : { 
+            'en': 'LastName',
+            'fr': 'Nom'
+        }
     }).save(function (err) { if (err) return handleError(err); });
 
     // Reset collections

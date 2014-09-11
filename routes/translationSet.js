@@ -1,7 +1,6 @@
 module.exports = function (){
     var _ = require('lodash');
     var result = {},
-        async = require('async'),
 		models = require(process.cwd() + '/models/models'),
 		compacter = require(process.cwd() + '/routes/compacter');
     
@@ -20,18 +19,22 @@ module.exports = function (){
             var promise = models.translationSetModel.findOne({ name: tranSetName }).exec();
 
             promise.addBack(function (err, tranSet) {
-                models.translationModel.find({translationSet: tranSet}).populate('translationSet').exec(function (err, translations) {
-                    if (err) next(err);
-                    
+
+                var query = models.translationModel.find({ translationSets: { "$in": [tranSet] } });
+
+                query.populate('translationSets').exec(function (erro, translations) {
+                    if (erro) next(erro);
+
                     if (typeof response[tranSetName] == 'undefined') response[tranSetName] = {};
                 
                     _.map(translations, function (translation) {
-                        response[tranSetName][translation.key] = compacter.compressDocument(translation);
+                        response[tranSetName][translation.key] = compacter.compactDocument(translation);
                     }, this);
                     
                     // Once everything's done, send response
                     if (index == lastIndex) res.send(response);
                 });
+
             });
 
         });
@@ -42,7 +45,6 @@ module.exports = function (){
       Return all translation set names
     -------------------------------------------*/
     result.getNames = function (req, res, next){
-
 		models.translationSetModel.find(null, function (err, translationSets){
             if (err) return next(err);
             res.send(_.uniq(_.pluck(translationSets, 'name')));

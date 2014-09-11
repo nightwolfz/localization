@@ -64,16 +64,17 @@
                         <li class="col">
                             <button class="plusminus" ng-click="translator.remove(trans)"> - </button>
                         </li>
-                        <li class="col" ng-repeat="set in trans.translationSets">
-                            <input type="text" style="width:100px" ng-model="set" pattern="[a-zA-Z0-9\.\_]{3,16}" required />
+                        <li class="col" ng-repeat="(set, v) in trans.translationSets">
+                            <input type="hidden" style="width:100px" ng-model="v" />
+                            <input type="text" style="width:100px" ng-model="trans.translationSets[set]" pattern="[a-zA-Z0-9\.\_]{3,16}" required />
                         </li>
                     </ul>
-                    <ul class="row" ng-repeat="(lang, val) in trans.values">
+                    <ul class="row" ng-repeat="(lang, val) in trans.values track by $index">
                         <li class="col">
                             <input type="text" ng-model="lang" pattern="[a-z]{2}" ng-disabled="1" style="width:14px;" required />
                         </li>
                         <li class="col">
-                            <input type="text" class="trans" ng-model="val" placeholder="Your translation goes here..." required />
+                            <input type="text" class="trans" ng-model="trans.values[lang]" placeholder="Your translation goes here..." required />
                         </li>
                     </ul>
                     <ul class="row">

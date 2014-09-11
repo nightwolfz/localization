@@ -8,13 +8,13 @@ var restify = require('restify'),
 			name: 'serverLog',
 			streams: [
 			{
-				level: 'warn',
+				level: 'error',
 				path: process.cwd() + '/log/translationsManager.log'  // log ERROR and above to a file
-			},
+			}/*,
 			{
-				level: 'warn',
+				level: 'error',
 				stream: process.stdout  // log ERROR and above to a file
-			}]
+			}*/]
 		})
 	}),
 	translationRoutes = require('./routes/translation'),
@@ -23,7 +23,7 @@ var restify = require('restify'),
     models = require('./models/models'),
 	mongoose = require('mongoose');
 
-server.use(restify.requestLogger());
+//server.use(restify.requestLogger());
 server.use(restify.bodyParser());
 server.get('/api/translationsetnames', translationSetRoutes.getNames);
 server.get('/api/translationset/:name', translationSetRoutes.get);
@@ -37,8 +37,8 @@ server.on('after', restify.auditLogger({
 	log: server.log.child({ audit: true })
 }));
 server.on('uncaughtException', function (req, res, route, err) {
-	try{
-		req.log.child({ error: true }).error({ req: req, res: res, route: route, err: err })
+	try {
+	    req.log.child({ error: true }).error({err: err });
 	}
 	finally{
 		res.send(err);
