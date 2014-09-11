@@ -51,18 +51,42 @@
                 <div class="clear"></div>
             </div>
             
-            <div class="transTable">
-                <div translate translate-values='{ "Home.FirstName": "HEHHEHEHE"}'>Home.NestedTestString</div>
+            <div class="transTable dark">
+                <b>Add a new translation key </b>
+                <input type="text" style="width:100px" ng-model="newkey.key" pattern="[a-zA-Z0-9\.\_]{3,16}" required />
+            </div>
+            <div class="transTable" id="newkey">
+                <ul class="row">
+                    <li class="col" ng-repeat="(sk, sv) in newkey.sets">
+                        Sets: <input type="text" style="width:100px" ng-model="newkey.sets[sk]" pattern="[a-zA-Z0-9\.\_]{3,16}" required />
+                    </li>
+                </ul>
+                <ul class="row" ng-repeat="lang in newkey.lang">
+                    <li class="col">
+                        <input type="text" ng-model="lang" ng-disabled="1" style="width:14px;" required />
+                    </li>
+                    <li class="col">
+                        <input type="text" class="trans" ng-model="newkey.values[lang]" placeholder="Your translation goes here..." required />
+                    </li>
+                </ul>
+                <ul class="row">
+                    <li class="col">
+                        <button type="button" ng-click="translator.add(trans);">Add new translation</button>
+                    </li>
+                </ul>
             </div>
 
-            <div class="transTable">
-                <div ng-repeat="(k, trans) in translator.table">
+            <div ng-repeat="(k, trans) in translator.table">
+                <div class="transTable dark">
+                    <b>{{trans.key}}</b>
+                </div>
+                <div class="transTable">
                     <ul class="row">
                         <li class="col clear">
-                            <button class="plusminus" ng-click="translator.add(trans)"> + </button>
+                            <button class="plusminus" ng-click="translator.addSet(trans)"> + </button>
                         </li>
                         <li class="col">
-                            <button class="plusminus" ng-click="translator.remove(trans)"> - </button>
+                            <button class="plusminus" ng-click="translator.removeSet(trans)"> - </button>
                         </li>
                         <li class="col" ng-repeat="(set, v) in trans.translationSets">
                             <input type="hidden" style="width:100px" ng-model="v" />

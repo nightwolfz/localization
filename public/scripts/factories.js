@@ -43,14 +43,15 @@ app.factory('LoaderFactory', function ($http, $q, $timeout, $rootScope) {
 app.factory('TranslationFactory', function TranslationFactory($http) {
     
     return {
-        add: function (trans) {
+    
+        addSet: function (trans) {
             var index = trans.translationSets.indexOf('');
             if (index == -1) {
                 trans.translationSets.push('');
             }
         },
 
-        remove: function (trans) {
+        removeSet: function (trans) {
             trans.translationSets = trans.translationSets.filter(function (x) {
                 return x != '' && typeof x == 'string';
             });
@@ -83,7 +84,7 @@ app.factory('TranslationFactory', function TranslationFactory($http) {
         },
 
         send: function(trans){
-            /* Create the object to send */
+            // Create the object to send
             var json = {};
             json[trans.key] = {
                 'values': trans.values,
@@ -92,6 +93,7 @@ app.factory('TranslationFactory', function TranslationFactory($http) {
             
             info(JSON.stringify(json, null, 4));
             
+            // Send
             $http({
                 method  : 'POST',
                 url     : '/api/translation',
@@ -111,7 +113,22 @@ app.factory('TranslationFactory', function TranslationFactory($http) {
                 /*$scope.errorMessage = 'FAILED! ' + status;
                 $translate.refresh();*/
             });
+        },
+
+        add: function (trans) {
+            // Create the object to send
+            var json = {};
+            json[trans.key] = {
+                'values': trans.values,
+                'translationSets': trans.translationSets
+            };
+
+            info(JSON.stringify(json, null, 4));
+
+
+            // Send
         }
+
     };
 
 });

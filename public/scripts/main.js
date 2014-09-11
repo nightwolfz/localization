@@ -41,6 +41,13 @@ app.run(function($rootScope, $cookies, $translate) {
         options: $rootScope.availableLanguages,
         current: $cookies.locale
     };
+
+    $rootScope.newkey = {
+        name: '',
+        sets: [],
+        lang: ['en','fr','nl','de'],
+        values: {}
+    };
 });
 
 app.config(function ($translateProvider) {

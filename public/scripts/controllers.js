@@ -1,17 +1,19 @@
 ﻿app.controller('langController', function langController($scope, $http, $cookies, $location, $translate, TranslationFactory) {
     
-    
-    
-    
     /*------------------------------------------
-       Add translation set
+       Add new translation
     -------------------------------------------*/
     $scope.translator.add = TranslationFactory.add;
     
     /*------------------------------------------
+       Add translation set
+    -------------------------------------------*/
+    $scope.translator.addSet = TranslationFactory.addSet;
+    
+    /*------------------------------------------
        Remove translation set
     -------------------------------------------*/
-    $scope.translator.remove = TranslationFactory.remove;
+    $scope.translator.removeSet = TranslationFactory.removeSet;
 
     /*------------------------------------------
        Enable/disable a field
@@ -30,6 +32,8 @@
     -------------------------------------------*/
     $scope.$watch('translator.data', function (newValue, oldValue) {
         if (newValue != oldValue) $scope.translator.refresh();
+        console.log($scope.newkey);
+        $scope.newkey.sets = [$scope.translator.selectedSet];
     });
 
     /*------------------------------------------
