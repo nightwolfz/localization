@@ -32,8 +32,7 @@
     -------------------------------------------*/
     $scope.$watch('translator.data', function (newValue, oldValue) {
         if (newValue != oldValue) $scope.translator.refresh();
-        console.log($scope.newkey);
-        $scope.newkey.sets = [$scope.translator.selectedSet];
+        $scope.newkey.translationSets = [$scope.translator.selectedSet];
     });
 
     /*------------------------------------------

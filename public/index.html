@@ -51,34 +51,36 @@
                 <div class="clear"></div>
             </div>
             
-            <div class="transTable dark">
-                <b>Add a new translation key </b>
-                <input type="text" style="width:100px" ng-model="newkey.key" pattern="[a-zA-Z0-9\.\_]{3,16}" required />
-            </div>
-            <div class="transTable" id="newkey">
-                <ul class="row">
-                    <li class="col" ng-repeat="(sk, sv) in newkey.sets">
-                        Sets: <input type="text" style="width:100px" ng-model="newkey.sets[sk]" pattern="[a-zA-Z0-9\.\_]{3,16}" required />
-                    </li>
-                </ul>
-                <ul class="row" ng-repeat="lang in newkey.lang">
-                    <li class="col">
-                        <input type="text" ng-model="lang" ng-disabled="1" style="width:14px;" required />
-                    </li>
-                    <li class="col">
-                        <input type="text" class="trans" ng-model="newkey.values[lang]" placeholder="Your translation goes here..." required />
-                    </li>
-                </ul>
-                <ul class="row">
-                    <li class="col">
-                        <button type="button" ng-click="translator.add(trans);">Add new translation</button>
-                    </li>
-                </ul>
-            </div>
+            <form name="newKeyForm" novalidate>
+                <div class="transTable dark">
+                    <span>Add a new translation key </span>
+                    <input type="text" style="width:100px" ng-model="newkey.key" pattern="[a-zA-Z]{3,16}" required />
+                </div>
+                <div class="transTable" id="newkey">
+                    <ul class="row">
+                        <li class="col" ng-repeat="(sk, sv) in newkey.translationSets">
+                            Sets: <input type="text" style="width:100px" ng-model="newkey.translationSets[sk]" pattern="[a-zA-Z0-9\.\_]{3,16}" required />
+                        </li>
+                    </ul>
+                    <ul class="row" ng-repeat="lang in newkey.lang">
+                        <li class="col">
+                            <input type="text" ng-model="lang" ng-disabled="1" style="width:20px;" required />
+                        </li>
+                        <li class="col">
+                            <input type="text" class="trans" ng-model="newkey.values[lang]" placeholder="Your translation goes here..." required />
+                        </li>
+                    </ul>
+                    <ul class="row">
+                        <li class="col">
+                            <button type="button" ng-click="translator.add(newkey);">Add new translation</button>
+                        </li>
+                    </ul>
+                </div>
+            </form>
 
             <div ng-repeat="(k, trans) in translator.table">
                 <div class="transTable dark">
-                    <b>{{trans.key}}</b>
+                    <span>{{trans.key}}</span>
                 </div>
                 <div class="transTable">
                     <ul class="row">
@@ -95,7 +97,7 @@
                     </ul>
                     <ul class="row" ng-repeat="(lang, val) in trans.values track by $index">
                         <li class="col">
-                            <input type="text" ng-model="lang" pattern="[a-z]{2}" ng-disabled="1" style="width:14px;" required />
+                            <input type="text" ng-model="lang" pattern="[a-z]{2}" ng-disabled="1" style="width:20px;" required />
                         </li>
                         <li class="col">
                             <input type="text" class="trans" ng-model="trans.values[lang]" placeholder="Your translation goes here..." required />

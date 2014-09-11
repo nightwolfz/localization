@@ -43,8 +43,8 @@ app.run(function($rootScope, $cookies, $translate) {
     };
 
     $rootScope.newkey = {
-        name: '',
-        sets: [],
+        key: '',
+        translationSets: [],
         lang: ['en','fr','nl','de'],
         values: {}
     };

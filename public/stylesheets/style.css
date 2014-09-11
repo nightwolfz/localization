@@ -1,5 +1,5 @@
 body {
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 14px arial, sans-serif;
   margin: 1em; 
   padding: 0;
 }
@@ -60,12 +60,17 @@ div#header h1 {
 div#newkey {
     background: #eee;
     padding: 16px 8px;
+    margin: 0;
 }
 
 div#newkey h2 {
     color: #999;
     font-size: 14px;
     padding: 0;
+}
+
+form {
+    margin-bottom: 1em;
 }
 
 .transTable {
@@ -111,7 +116,10 @@ div#newkey h2 {
 }
 
 .transTable .col input {
-    padding: 2px 4px;
+    padding: 4px 4px;
+    border: 1px solid #cfcfcf;
+    -ms-border-radius: 2px;
+    border-radius: 2px;
 }
 
 .transTable button:hover {
@@ -135,18 +143,29 @@ div#newkey h2 {
     width: 94%;
 }
 
+/* Bold the Sets input */
+.transTable .row:first-child > .col input {
+    font-weight: bold;
+}
+
+/* Bold the languages input */
+.transTable .row > .col input[disabled] {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+
 .transTable .col .save {
     margin-right: 0.35em;
     float: right;
 }
 
 .transTable .col .plusminus {
-    height: 25px;
-    width: 25px;
+    height: 22px;
+    width: 22px;
     padding: 0;
-    margin-top: -3px;
-    border-radius: 16px;
-    line-height: 1em;
+    margin-top: -2px;
+    border-radius: 4px;
     font-size: 1em;
     outline: none;
 }
@@ -178,6 +197,19 @@ div#newkey h2 {
 .clear {
     clear: both;
 }
+
+.ng-invalid {
+    border: 2px solid #FF8686;
+    -ms-border-radius: 3px;
+    border-radius: 3px;
+}
+
+form.ng-pristine,
+form.ng-invalid,
+form.ng-invalid-required {
+    border: 2px solid #8196C4;
+}
+
 
 .edit-in-place span {
     cursor: pointer;

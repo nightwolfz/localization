@@ -116,6 +116,17 @@ app.factory('TranslationFactory', function TranslationFactory($http) {
         },
 
         add: function (trans) {
+            
+            /*if (trans.key == '') {
+                throw new Exception('Key cannot be null');
+            }*/
+
+            /*if (Object.keys(trans.values).length == 0) {
+                for (f in trans.lang) {
+                    trans.values[trans.lang[f]] = 'Empty';
+                }
+            }*/
+
             // Create the object to send
             var json = {};
             json[trans.key] = {
@@ -124,7 +135,6 @@ app.factory('TranslationFactory', function TranslationFactory($http) {
             };
 
             info(JSON.stringify(json, null, 4));
-
 
             // Send
         }
