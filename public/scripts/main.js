@@ -11,16 +11,16 @@ function info(str) {
     console.info("%c " + str + ' ', 'background: #CFE8FF; color: #000');
 }
 
-var app = angular.module('translateApp', ['ngRoute', 'ngCookies', 'pascalprecht.translate']);
+var app = angular.module('translateApp', ['ngCookies', 'pascalprecht.translate']);
 
 
 /*------------------------------------------------------------------------------
  Add inline editor
 -------------------------------------------------------------------------------*/
-InlineEditor.elementChanged = function(el, oldVal, newVal) {
+/*InlineEditor.elementChanged = function(el, oldVal, newVal) {
     console.log(oldVal);
     console.log(newVal);
-};
+};*/
 
 
 /*------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ InlineEditor.elementChanged = function(el, oldVal, newVal) {
 -------------------------------------------------------------------------------*/
 app.run(function($rootScope, $cookies, $translate) {
     $rootScope.translator = {};
-    $cookies.locale = $cookies.locale || "en";
+    $cookies.locale = $cookies.locale || "fr";
     $translate.use($cookies.locale);
     $rootScope.languageKeys = [];
     $rootScope.availableLanguages = [{ key: 'en', name: 'English' }, { key: 'fr', name: 'Français' }];
@@ -45,7 +45,7 @@ app.run(function($rootScope, $cookies, $translate) {
     $rootScope.newkey = {
         key: '',
         translationSets: [],
-        lang: ['en','fr','nl','de'],
+        lang: ['fr','en','nl','de'],
         values: {}
     };
 });

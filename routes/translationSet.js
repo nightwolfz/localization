@@ -1,42 +1,44 @@
 module.exports = function (){
-    var _ = require('lodash');
-    var result = {},
+    var action = {},
+        response = {},
+        _ = require('lodash'),
+        async = require('async'),
 		models = require(process.cwd() + '/models/models'),
 		compacter = require(process.cwd() + '/routes/compacter');
     
     
+    var getTranslationsBySet = function (setName, next) {
+        
+        models.translationSetModel.findOne({ name: setName }).exec(function (err, tranSet) {
+            if (err) next(err);
+            
+            var query = models.translationModel.find({ translationSets: { "$in": [tranSet] } });
+            
+            query.populate('translationSets').exec(function (erro, translations) {
+                if (erro) next(erro);
+                
+                if (!response.hasOwnProperty(setName)) response[setName] = {};
+                
+                _.map(translations, function (translation) {
+                    response[setName][translation.key] = compacter.compactDocument(translation);
+                });
+                
+                next();
+            });
+
+        });
+    };
+
+    
     /*------------------------------------------
       Return translations as JSON
     -------------------------------------------*/
-    result.get = function (req, res, next) {
+    action.get = function (req, res, next) {
 
-        var selectedSet = _.uniq(req.params.name.split(','));
-        var lastIndex = selectedSet.length - 1;
-        var response = {};
-
-        _.each(selectedSet, function (tranSetName, index) {
-
-            var promise = models.translationSetModel.findOne({ name: tranSetName }).exec();
-
-            promise.addBack(function (err, tranSet) {
-
-                var query = models.translationModel.find({ translationSets: { "$in": [tranSet] } });
-
-                query.populate('translationSets').exec(function (erro, translations) {
-                    if (erro) next(erro);
-
-                    if (typeof response[tranSetName] == 'undefined') response[tranSetName] = {};
-                
-                    _.map(translations, function (translation) {
-                        response[tranSetName][translation.key] = compacter.compactDocument(translation);
-                    }, this);
-                    
-                    // Once everything's done, send response
-                    if (index == lastIndex) res.send(response);
-                });
-
-            });
-
+        var selectedSets = _.uniq(req.params.name.split(','));
+        
+        async.each(selectedSets, getTranslationsBySet, function (err) {
+            return err ? next(err) : res.send(response);
         });
 
     };
@@ -44,12 +46,12 @@ module.exports = function (){
     /*------------------------------------------
       Return all translation set names
     -------------------------------------------*/
-    result.getNames = function (req, res, next){
+    action.getNames = function (req, res, next){
 		models.translationSetModel.find(null, function (err, translationSets){
             if (err) return next(err);
             res.send(_.uniq(_.pluck(translationSets, 'name')));
 		});
 	};
 
-	return result;
+	return action;
 }();

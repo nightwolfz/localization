@@ -26,10 +26,13 @@ app.factory('LoaderFactory', function ($http, $q, $timeout, $rootScope) {
             //@TODO: Remove commented code when deploying
             //$rootScope.$digest(); // manually propagate changes
 
-            setTimeout(function() {
+            setTimeout(function () {
+                console.debug('Loading');
                 $rootScope.translator.data = data;
-                $rootScope.$digest();
-            }, 400); // Simulate network latency 
+
+                //$rootScope.$digest(); // propagate changes
+                $rootScope.$apply();
+            }, 400); // Simulate network latency */
         });
         
         return deferred.promise;
@@ -63,7 +66,7 @@ app.factory('TranslationFactory', function TranslationFactory($http) {
 
         refresh: function (translator) {
 
-            debug("Refreshing table " + JSON.stringify(translator.data, null));
+            debug("Refreshing table...");// + JSON.stringify(translator.data, null));
             
             var single = [];
 
@@ -136,7 +139,36 @@ app.factory('TranslationFactory', function TranslationFactory($http) {
 
             info(JSON.stringify(json, null, 4));
 
+            var validation = [
+                function() { return !trans.hasOwnProperty('key') || trans.key == ''; },
+                function() { return !trans.hasOwnProperty('values') || trans.values == ''; }
+            ];
+            
+            for (var v in validation) {
+                if (!validation[v]()) return error('Validation error. One or more values are empty.');
+            }
+
+
             // Send
+            $http({
+                method  : 'POST',
+                url     : '/api/translation',
+                data    : json,
+                dataType: "json",
+                headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // pass info as form data (not request payload)
+            })
+            .success(function (data) {
+                info("Success!");
+                /*$scope.infoMessage = data.message;
+                $scope.translator.table = $scope.translator.refresh();
+                $translate.refresh();*/
+            })
+            .error(function (error, status) {
+                console.error("%c [" + error.code + '] ' + error.message, 'background: #fee; color: #c30');
+                //error('[' + error.code + '] ' + error.message);
+                /*$scope.errorMessage = 'FAILED! ' + status;
+                $translate.refresh();*/
+            });
         }
 
     };

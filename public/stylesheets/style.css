@@ -73,6 +73,10 @@ form {
     margin-bottom: 1em;
 }
 
+#newkey {
+    border-color: #9AC0A3;
+}
+
 .transTable {
     margin: 0;
     border-collapse: collapse;
@@ -81,7 +85,6 @@ form {
 .transTable {
     background: #eee;
     padding: 8px 10px;
-    margin-bottom: 1em;
 }
 
 
@@ -90,9 +93,18 @@ form {
     margin-bottom: 0;
 }
 
+.transTable.dark > span {
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+.transTable.dark > input {
+    padding: 4px 8px;
+}
+
 .transTable textarea {
-    width: 99%;
-    height: 5em;
+    width: 94%;
+    height: 2em;
 }
 
 .transTable th, .transTable tr, .transTable td {
