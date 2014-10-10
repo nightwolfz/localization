@@ -39,6 +39,14 @@ app.factory('LoaderFactory', function ($http, $q, $timeout, $rootScope) {
     };
 });
 
+/*----------------------------------------------------------------
+  Translation Manager
+-----------------------------------------------------------------*/
+app.factory('User', function() {
+    return {
+        name: null
+    };
+});
 
 /*----------------------------------------------------------------
   Translation Manager

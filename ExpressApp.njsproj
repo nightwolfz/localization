@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4a77448b-b1ee-4d5a-ba62-c6560b2c525b}</ProjectGuid>
     <ProjectHome />
-    <ProjectView>ProjectFiles</ProjectView>
+    <ProjectView>ShowAllFiles</ProjectView>
     <StartupFile>
     </StartupFile>
     <WorkingDirectory>.</WorkingDirectory>
@@ -20,7 +20,9 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
+    <Compile Include="public\scripts\services.js" />
     <Compile Include="routes\compacter.js" />
+    <Compile Include="routes\login.js" />
     <Compile Include="routes\translation.js" />
     <Compile Include="routes\translationSet.js" />
     <Compile Include="server.js" />
@@ -57,6 +59,10 @@
     <Content Include="public\images\glyphicons-halflings.png" />
     <Content Include="public\images\voo-logo.png" />
     <Content Include="public\index.html" />
+    <Content Include="public\partials\add-new-key.html" />
+    <Content Include="public\partials\header.html" />
+    <Content Include="public\partials\list-header.html" />
+    <Content Include="public\partials\list-translations.html" />
     <Content Include="public\stylesheets\style.css" />
     <Content Include="run_mongo.bat" />
     <Content Include="run_node.bat" />
@@ -72,6 +78,7 @@
     <Folder Include="models\" />
     <Folder Include="public" />
     <Folder Include="public\images" />
+    <Folder Include="public\partials\" />
     <Folder Include="public\scripts\" />
     <Folder Include="public\scripts\libs\" />
     <Folder Include="public\stylesheets" />

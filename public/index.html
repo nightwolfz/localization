@@ -9,130 +9,51 @@
         <link rel='stylesheet' href="/stylesheets/style.css" />
 
         <script src="/scripts/libs/angular.js"></script>
+        <script src="/scripts/libs/angular-route.js"></script>
         <script src="/scripts/libs/angular-cookies.js"></script>
         <script src="/scripts/libs/angular-translate.js"></script>
+        <script src="/scripts/libs/angular-flash.min.js"></script>
         <!-- <script src="/scripts/libs/inlineeditor.js"></script> <!-- http://iharder.sourceforge.net/current/misc/inlineeditor/ -->
         
 
         <script src="/scripts/main.js"></script>
         <!--<script src="/scripts/filters.js"></script>-->
         <!--<script src="/scripts/directives.js"></script>-->
+        <script src="/scripts/services.js"></script>
         <script src="/scripts/factories.js"></script>
         <script src="/scripts/controllers.js"></script>
 
     </head>
-    <body>
-
-        <section ng-controller="langController">
-            
-            <div id="header">
-                <a href="/Maintenance"><img src="images/voo-logo.png"></a>
-                <h1 translate>Generic.Title</h1>
+    <body ng-controller="ApplicationController">
+        
+        <section ng-include src="'partials/header.html'">
+        </section>
+        
+        <section ng-controller="loginController"> 
+            <div id="subheader" style="padding:8px 4px">
+                <div ng-if="currentUser">Welcome, <b>{{ currentUser }}</b></div>
+                <div><a href="#" ng-click="logout()">Logout</a></div>
             </div>
-
-            <div class="error" ng-show="errorMessage"><span class="img-error">&nbsp;</span> {{errorMessage}}</div>
-            <div class="info" ng-show="infoMessage"><span class="img-ok">&nbsp;</span> {{infoMessage}}</div>
-
-            <div class="header">
-                
-                <div style="float: left">
-                    <span translate>Generic.ChangeTranslationSet</span>
-                    <select ng-model="translator.selectedSet">
-                        <option ng-repeat="set in translator.sets">{{ set }}</option>
-                    </select>
-                </div>
-
-                <div style="float: right">
-                    <span translate>Generic.ChangeLanguage</span>
-                    <select ng-model="language.current" ng-options="lang.key as lang.name for lang in language.options"></select>
-                </div>
-                
-                <div class="clear"></div>
-            </div>
-            
-            <form name="newKeyForm" id="newkey" ng-submit="translator.add(newkey)" novalidate>
-                <div class="transTable dark">
-                    <span>Add a new translation key </span>
-                    <input type="text" style="width:100px" ng-model="newkey.key" pattern="[a-zA-Z]{3,16}" placeholder="Key name..." required />
-                </div>
-                <div class="transTable">
-                    <ul class="row">
-                        <li class="col">
-                            Sets:
-                        </li>
-                        <li class="col" ng-repeat="(set, v) in newkey.translationSets">
-                            <input type="hidden" style="width:100px" ng-model="v" />
-                            <input type="text" style="width:100px" ng-model="newkey.translationSets[set]" 
-                                   pattern="[a-zA-Z0-9\_]" 
-                                   ng-minlength="3"
-                                   ng-maxlength="16"
-                                   placeholder="Key name..." required />
-                        </li>
-                        <li class="col clear">
-                            <button class="plusminus" ng-click="translator.addSet(newkey)"> + </button>
-                        </li>
-                        <li class="col">
-                            <button class="plusminus" ng-click="translator.removeSet(newkey)"> - </button>
-                        </li>
-                    </ul>
-                    <ul class="row" ng-repeat="lang in newkey.lang">
-                        <li class="col">
-                            <input type="text" ng-model="lang" ng-disabled="1" style="width:20px;" required />
-                        </li>
-                        <li class="col">
-                            <input type="text" class="trans" ng-model="newkey.values[lang]" placeholder="Your translation goes here..." required />
-                        </li>
-                    </ul>
-                    <ul class="row">
-                        <li class="col">
-                            <button type="submit">Add new translation</button>
-                        </li>
-                    </ul>
-                </div>
+            <form ng-hide="currentUser" name="loginForm" ng-submit="login(credentials)" class="transTable" novalidate>
+                <label for="username">Username:</label>
+                <input type="text" id="username" ng-model="credentials.username">
+                <label for="password">Password:</label>
+                <input type="password" id="password" ng-model="credentials.password">
+                <button type="submit">Login</button>
             </form>
-
-            <div ng-repeat="(k, trans) in translator.table">
-                <form name="transTableForm[{{k}}]" ng-submit="translator.send(trans)" novalidate>
-                    <div class="transTable dark">
-                        {{trans.key}}
-                    </div>
-                    <div class="transTable">
-                        <ul class="row">
-                            <li class="col" ng-repeat="(set, v) in trans.translationSets">
-                                <input type="hidden" style="width:100px" ng-model="v" />
-                                <input type="text" style="width:100px" ng-model="trans.translationSets[set]"
-                                       pattern="[a-zA-Z0-9\_]"
-                                       ng-minlength="3"
-                                       ng-maxlength="16"
-                                       placeholder="Key name..." required />
-                            </li>
-                            <li class="col clear">
-                                <button class="plusminus" ng-click="translator.addSet(trans)"> + </button>
-                            </li>
-                            <li class="col">
-                                <button class="plusminus" ng-click="translator.removeSet(trans)"> - </button>
-                            </li>
-                        </ul>
-                        <ul class="row" ng-repeat="(lang, val) in trans.values track by $index">
-                            <li class="col">
-                                <input type="text" ng-model="lang" pattern="[a-z]{2}" ng-disabled="1" style="width:20px;" required />
-                            </li>
-                            <li class="col">
-                                <!--<textarea placeholder="Your translation goes here..."></textarea>-->
-                                <input type="text" class="trans" ng-model="trans.values[lang]" placeholder="Your translation goes here..." required />
-                            </li>
-                        </ul>
-                        <ul class="row">
-                            <li class="col">
-                                <button type="submit" class="save" translate>Generic.Save</button>
-                            </li>
-                        </ul>
-                        <div class="clear"></div>
-                    </div>
-                </form>
-            </div>
-
+            <div class="alert-flash fade" active-class="in" duration="3000" flash-alert>{{flash.message}}</div>
         </section>
 
+        <section>
+            <article ng-controller="langController">
+                
+                <div ng-if="currentUser" ng-include="'/partials/list-header.html'"></div>
+
+                <div ng-view="main-view"></div>
+            </article>
+        </section>
+
+
+        <div login-dialog ng-if="!isLoginPage"></div>
     </body>
 </html>

@@ -11,7 +11,7 @@ function info(str) {
     console.info("%c " + str + ' ', 'background: #CFE8FF; color: #000');
 }
 
-var app = angular.module('translateApp', ['ngCookies', 'pascalprecht.translate']);
+var app = angular.module('translateApp', ['ngCookies', 'ngRoute', 'pascalprecht.translate', 'angular-flash.service', 'angular-flash.flash-alert-directive']);
 
 
 /*------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ var app = angular.module('translateApp', ['ngCookies', 'pascalprecht.translate']
 /*------------------------------------------------------------------------------
  Initialize everything
 -------------------------------------------------------------------------------*/
-app.run(function($rootScope, $cookies, $translate) {
+app.run(function($rootScope, $cookies, $translate, AUTH_EVENTS, AuthService) {
     $rootScope.translator = {};
     $cookies.locale = $cookies.locale || "fr";
     $translate.use($cookies.locale);
@@ -48,9 +48,58 @@ app.run(function($rootScope, $cookies, $translate) {
         lang: ['fr','en','nl','de'],
         values: {}
     };
+    
+    // Check if authorized on every route change
+    $rootScope.$on('$stateChangeStart', function (event, next) {
+        var authorizedRoles = next.data.authorizedRoles;
+        if (!AuthService.isAuthorized(authorizedRoles)) {
+            event.preventDefault();
+            if (AuthService.isAuthenticated()) $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
+            else $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
+        }
+    });
+
 });
 
-app.config(function ($translateProvider) {
+app.constant('AUTH_EVENTS', {
+    loginSuccess: 'auth-login-success',
+    loginFailed: 'auth-login-failed',
+    logoutSuccess: 'auth-logout-success',
+    sessionTimeout: 'auth-session-timeout',
+    notAuthenticated: 'auth-not-authenticated',
+    notAuthorized: 'auth-not-authorized'
+});
+
+app.constant('USER_ROLES', {
+    all: '*',
+    admin: 'admin',
+    editor: 'editor'
+});
+
+app.config(function ($translateProvider, $routeProvider, USER_ROLES) {
+    
+    // Load translation strings for the manager itself
     $translateProvider.useLoader('LoaderFactory', { url: 'lang' });
-    //$translateProvider.usePostCompiling(true); // also puts translated elements in a <span>
+
+    // Restrict route access for guests and editors
+    $routeProvider.when('/add-new-key', {
+        templateUrl: 'partials/add-new-key.html',
+        controller: 'langController',
+        data: {
+            authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor]
+        }
+    });
+
+    $routeProvider.when('/list-translations', {
+        templateUrl: 'partials/list-translations.html',
+        controller: 'langController',
+        data: {
+            authorizedRoles: [USER_ROLES.all, USER_ROLES.editor]
+        }
+    });
+
+    $routeProvider.otherwise({
+        redirectTo: '/list-translations'
+    });
+
 });

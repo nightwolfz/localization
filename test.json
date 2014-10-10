@@ -1,0 +1,18 @@
+{
+    "Generic": {
+        "Title": {
+            "translationSets": [ "Generic", "Translation" ],
+            "values": { "en": "Translation Manager", "fr": "Gestionnaire de traduction" }
+        },
+
+        "ChangeLanguage": { "translationSets": [ "Generic" ], "values": { "en": "Change language", "fr": "Changer de langue" } },
+
+        "ChangeTranslationSet": { "translationSets": [ "Generic" ], "values": { "en": "Translation set", "fr": "Set de traduction" } },
+
+        "Create": { "translationSets": [ "Generic" ], "values": { "en": "Create", "fr": "Créer" } },
+
+        "Save": { "translationSets": [ "Generic" ], "values": { "en": "Save", "fr": "Sauvegarder" } }
+
+    }
+
+}

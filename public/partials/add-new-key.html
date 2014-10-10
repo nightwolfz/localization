@@ -1,0 +1,40 @@
+﻿<form name="newKeyForm" id="newkey" ng-submit="translator.add(newkey)" novalidate>
+    <div class="transTable dark">
+        <span>Add a new translation key </span>
+        <input type="text" style="width:100px" ng-model="newkey.key" pattern="[a-zA-Z]{3,16}" placeholder="Key name..." required />
+    </div>
+    <div class="transTable">
+        <ul class="row">
+            <li class="col">
+                Sets:
+            </li>
+            <li class="col" ng-repeat="(set, v) in newkey.translationSets">
+                <input type="hidden" style="width:100px" ng-model="v" />
+                <input type="text" style="width:100px" ng-model="newkey.translationSets[set]"
+                       pattern="[a-zA-Z0-9\_]"
+                       ng-minlength="3"
+                       ng-maxlength="16"
+                       placeholder="Key name..." required />
+            </li>
+            <li class="col">
+                <button class="plusminus" ng-click="translator.addSet(newkey)"> + </button>
+            </li>
+            <li class="col">
+                <button class="plusminus" ng-click="translator.removeSet(newkey)"> - </button>
+            </li>
+        </ul>
+        <ul class="row" ng-repeat="lang in newkey.lang">
+            <li class="col">
+                <input type="text" ng-model="lang" ng-disabled="1" style="width:20px;" required />
+            </li>
+            <li class="col">
+                <input type="text" class="trans" ng-model="newkey.values[lang]" placeholder="Your translation goes here..." required />
+            </li>
+        </ul>
+        <ul class="row">
+            <li class="col">
+                <button type="submit">Add new translation</button>
+            </li>
+        </ul>
+    </div>
+</form>

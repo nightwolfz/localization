@@ -12,7 +12,7 @@ a {
 
 section {
     background: #fafafa;
-    padding: 16px;
+    padding: 0 16px;
     margin: 0 auto;
     width: 780px;
     border: 1px solid #f0f0f0;
@@ -55,6 +55,17 @@ div#header h1 {
     margin: 4px 0 0 20px;
     padding: 13px 0 0 20px;
     word-spacing: 6px;
+}
+
+div#subheader {
+    float: right;
+}
+
+div#subheader div {
+    font-size: 10px;
+    color: #777;
+    margin-top: -0.5em;
+    padding: 4px 2px;
 }
 
 div#newkey {
@@ -182,18 +193,37 @@ form {
     outline: none;
 }
 
-.info {
-    padding: 8px 4px;
-    margin: 1em;
+/* Remove colors and add transition property */
+.alert-flash.in { display: block; }
+.alert-flash {
+    padding: 16px 8px;
+    /*display: none;*/
+    border-radius: 4px;
+}
+
+.fade {
+    opacity: 0;
+    -webkit-transition: opacity 0.15s linear;
+    -moz-transition: opacity 0.15s linear;
+    -o-transition: opacity 0.15s linear;
+    transition: opacity 0.15s linear;
+}
+.fade.in {
+    opacity: 1;
+}
+
+
+.info, .alert-success {
+    padding: 8px 10px;
+    margin: 1em 0;
     color: #D7FAAB;
 }
 
-.error {
-    padding: 8px 4px;
-    margin: 1em;
+.error, .alert-error {
+    padding: 8px 10px;
+    margin: 1em 0;
     background: #FFBCAB;
 }
-
 
 .img-ok { background-position: 182px 0;}
 .img-error { background-position: 158px 0;}
@@ -205,9 +235,31 @@ form {
     vertical-align: middle; 
 }
 
+/* Clear hack */
+.clear:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }
+* html .clear { zoom: 1; } /* IE6 */
+*:first-child+html .clear { zoom: 1; } /* IE7 */
 
-.clear {
-    clear: both;
+
+.left { float: left; }
+.right { float: right; }
+
+.menu {
+    padding: 1em;
+    background: #f3f3f3;
+    margin-bottom: 1em;
+}
+
+.menu .selected { color: #fff; background: #da1d79; }
+.menu a:hover {color: #fff; background: #da1d79;}
+.menu a {
+    cursor: pointer;
+    font-weight: bold;
+    color: #da1d79;
+    background: #fff;
+    padding: 4px 8px;
+    border: 2px solid #da1d79;
+    border-radius: 6px;
 }
 
 .ng-invalid {

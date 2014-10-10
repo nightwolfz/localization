@@ -1,0 +1,40 @@
+﻿<div ng-repeat="(k, trans) in translator.table">
+    <form name="transTableForm[{{k}}]" ng-submit="translator.send(trans)" novalidate>
+        <div class="transTable dark">
+            {{trans.key}}
+        </div>
+        <div class="transTable">
+            <ul class="row">
+                <li class="col" ng-repeat="(set, v) in trans.translationSets">
+                    <input type="hidden" style="width:100px" ng-model="v" />
+                    <input type="text" style="width:100px" ng-model="trans.translationSets[set]"
+                           pattern="[a-zA-Z0-9\_]"
+                           ng-minlength="3"
+                           ng-maxlength="16"
+                           placeholder="Key name..." required />
+                </li>
+                <li class="col">
+                    <button class="plusminus" ng-click="translator.addSet(trans)"> + </button>
+                </li>
+                <li class="col">
+                    <button class="plusminus" ng-click="translator.removeSet(trans)"> - </button>
+                </li>
+            </ul>
+            <ul class="row" ng-repeat="(lang, val) in trans.values track by $index">
+                <li class="col">
+                    <input type="text" ng-model="lang" pattern="[a-z]{2}" ng-disabled="1" style="width:20px;" required />
+                </li>
+                <li class="col">
+                    <!--<textarea placeholder="Your translation goes here..."></textarea>-->
+                    <input type="text" class="trans" ng-model="trans.values[lang]" placeholder="Your translation goes here..." required />
+                </li>
+            </ul>
+            <ul class="row">
+                <li class="col">
+                    <button type="submit" class="save" translate>Generic.Save</button>
+                </li>
+            </ul>
+            <div class="clear"></div>
+        </div>
+    </form>
+</div>

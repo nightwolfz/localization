@@ -46,7 +46,8 @@ module.exports = function (){
     /*------------------------------------------
       Return all translation set names
     -------------------------------------------*/
-    action.getNames = function (req, res, next){
+    action.getNames = function (req, res, next) {
+        console.log('---------------');
 		models.translationSetModel.find(null, function (err, translationSets){
             if (err) return next(err);
             res.send(_.uniq(_.pluck(translationSets, 'name')));

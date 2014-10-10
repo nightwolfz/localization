@@ -1,0 +1,24 @@
+﻿<div class="error" ng-show="errorMessage"><span class="img-error">&nbsp;</span> {{errorMessage}}</div>
+<div class="info" ng-show="infoMessage"><span class="img-ok">&nbsp;</span> {{infoMessage}}</div>
+
+<div class="header clear">
+    <div class="left">
+        <span translate>Generic.ChangeTranslationSet</span>
+        <select ng-model="translator.selectedSet">
+            <option ng-repeat="set in translator.sets">{{ set }}</option>
+        </select>
+    </div>
+    <div class="right">
+        <span translate>Generic.ChangeLanguage</span>
+        <select ng-model="language.current" ng-options="lang.key as lang.name for lang in language.options"></select>
+    </div>
+</div>
+
+<div class="menu clear" ng-init="partial = 'list-translations'">
+    <div class="left">
+        <a ng-class="{selected:partial=='list-translations'}" ng-click="loadPartial('list-translations')">List translations</a>
+    </div>
+    <div class="right">
+        <a ng-class="{selected:partial=='add-new-key'}" ng-click="loadPartial('add-new-key')">Add a new key</a>
+    </div>
+</div>
