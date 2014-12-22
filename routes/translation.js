@@ -1,7 +1,7 @@
 var _ = require('lodash');
-var models = require(process.cwd() + '/models/models'),
+var models = require('../models/models'),
 	result = {},
-	compacter = require(process.cwd() + '/routes/compacter'),
+	compacter = require('../routes/compacter'),
 	async = require('async');
 
 

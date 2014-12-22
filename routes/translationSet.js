@@ -10,12 +10,12 @@ module.exports = function (){
     var getTranslationsBySet = function (setName, next) {
         
         models.translationSetModel.findOne({ name: setName }).exec(function (err, tranSet) {
-            if (err) next(err);
+            if (err) return next(err);
             
             var query = models.translationModel.find({ translationSets: { "$in": [tranSet] } });
             
             query.populate('translationSets').exec(function (erro, translations) {
-                if (erro) next(erro);
+                if (erro) return next(erro);
                 
                 if (!response.hasOwnProperty(setName)) response[setName] = {};
                 

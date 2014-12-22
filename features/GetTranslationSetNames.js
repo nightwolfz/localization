@@ -25,14 +25,14 @@ module.exports = function (){
 		});
 
 		async.parallel(translationSetCreations, function(err, results){
-			if(err) callback(err);
+			if(err) return callback(err);
 			callback();
 		});
 	});
 
 	this.When(/^I request the translations set names$/, function (callback) {
 	  	this.client.get('/api/translationsetnames', function (err, req, res, obj){
-			if(err) callback(err);
+			if(err) return callback(err);
 
 			translationSetNames = obj;
 
